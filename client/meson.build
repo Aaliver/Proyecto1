@@ -1,4 +1,4 @@
-imgui_dep = dependency('imgui', required: false)
+imgui_dep = dependency('imgui', fallback: ['imgui', 'imgui_dep'])
 
 client_sources = files('Cliente.cpp')
 
