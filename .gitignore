@@ -2,3 +2,7 @@ builddir/
 subprojects/*
 !subprojects/*.wrap
 
+*.aux
+*.log
+*.pdf
+*.toc
