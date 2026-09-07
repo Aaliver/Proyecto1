@@ -105,14 +105,30 @@
 Este Proyecto busca implementar el cliente y el servidor de un chat multiusuario
 funcional mediante la implementación de ciertos patrones de diseño que faciliten
 su desarrollo. A su vez, se espera seguir el enfoque de gestión de proyectos
-usando el modelo de la cascada, así como practicas como las pruebas unitarias o
-el código limpio, que no solo facilitan el desarrollo de proyectos, si no que
+usando el modelo de la cascada, así como prácticas como las pruebas unitarias o
+el código limpio, que no solo facilitan el desarrollo de proyectos, sino que
 aseguran una mejor comprensión de cualquier proceso que lo implemente.
 
 \section*{Problema}
 \addcontentsline{toc}{section}{Problema}
 
+Al ser un chat multiusuario, como su nombre lo indica, se espera que varias
+personas se conecten al servidor de manera simultánea sin generar problemas
+tanto para el cliente como para el servidor. En esencia, el servidor debe
+permanecer siempre activo, ningún error debe terminar el programa, y en caso de
+que alguno se detecte, el servidor debe ser capaz de manejarlo sin que afecte a
+ninguno de los usuarios.
 
+Para llevar esto a cabo se necesita del uso de programación concurrente, esto
+para poder realizar diferentes tareas sin darle prioridad a ninguna en
+particular.
+
+También es necesaria una comunicación entre el cliente y el servidor. Los
+usuarios no pueden comunicarse directamente entre sí; en su lugar, necesitan
+enviar una solicitud al servidor para que este la procese y genere una
+respuesta. Este proceso se aplica a cualquier acción que el usuario desee
+realizar. Primero tiene que pasar por el servidor y, dependiendo de su validez,
+se realizará.
 
 \section*{Análisis}
 \addcontentsline{toc}{section}{Análisis}
