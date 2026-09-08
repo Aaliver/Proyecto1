@@ -18,11 +18,12 @@
 \date{\today\\[2.6cm]}
 
 % PAQUETES DE ESTILO
-\usepackage{xcolor}         % Para definir y usar colores
-\usepackage{listings}       % Para el estilo de código mystyle
-\usepackage{fancyhdr}       % Para los encabezados y pies de página fancy
-\usepackage{titlesec}       % Para configurar \titleformat
-\usepackage{enumitem}       % Para configurar \setlist
+\usepackage{xcolor}           % Para definir y usar colores
+\usepackage{listings}         % Para el estilo de código mystyle
+\usepackage{fancyhdr}         % Para los encabezados y pies de página fancy
+\usepackage{titlesec}         % Para configurar \titleformat
+\usepackage{enumitem}         % Para configurar \setlist
+\usepackage[most]{tcolorbox}  % Para los cuadros de color
 
 % CONFIGURACIONES Y COLORES
 \definecolor{maincolor}{RGB}{0, 51, 102}
@@ -41,6 +42,34 @@
       \item {\fontseries{sb}\selectfont Petición del cliente:} #2
       \item {\fontseries{sb}\selectfont Respuesta del servidor:} #3
     \end{itemize}
+}
+
+\newcommand{\uml}[3]{
+    \begin{center}
+        \begin{tcolorbox}[colback=maincolor!10, colframe=maincolor,
+            colupper=black, fontupper=\small\ttfamily,
+            boxrule=0.2mm, arc=2pt,
+            left=3pt, right=3pt, top=1pt, bottom=1pt, width=2.5in,
+            title={\centering\fontseries{sb}\selectfont #1},
+            colbacktitle=maincolor!35,
+            coltitle=black,
+            toptitle=4pt, bottomtitle=4pt]
+
+            \vspace{4pt}
+            \begin{itemize}[label={}, itemsep=-5pt]
+                #2
+            \end{itemize}
+            \vspace{6pt}
+
+            {\color{maincolor}\hrule height 0.2mm}
+
+            \vspace{-3pt}
+            \begin{itemize}[label={}, itemsep=-5pt]
+                #3
+            \end{itemize}
+            \vspace{-6pt}
+        \end{tcolorbox}
+    \end{center}
 }
 
 % ESTILO DE CÓDIGO
