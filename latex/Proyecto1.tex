@@ -142,6 +142,59 @@ se realizará.
 \section*{Análisis}
 \addcontentsline{toc}{section}{Análisis}
 
+A grandes rasgos, este chat se puede dividir en el cliente y el servidor,
+simplemente explicando las acciones que realizan y cómo interactúan entre sí a
+través de los mensajes que se envían.
+
+\begin{itemize}
+    \newItem{Identificación del usuario}{Solicitud para conectarse e
+        identificarse con un nombre de usuario.}{Si el nombre está disponible,
+        se envía un mensaje al resto de los clientes informando del nuevo
+        usuario, en caso contrario responderá que el nombre de usuario ya está
+        en uso.}
+    \newItem{Cambiar estado}{Cambiar el estado del usuario entre \texttt{active},
+        \texttt{away} y \texttt{busy}.}{Si el nuevo estado es diferente al
+        anterior, el servidor informa a los demás clientes del cambio.}
+    \newItem{Lista de usuarios}{Solicita la lista de los usuarios en el
+        chat.}{Regresa un objeto con los nombres y estados de los usuarios.}
+    \newItem{Mensaje privado}{Mandar un mensaje privado a un usuario.}{Si el
+        usuario existe el mensaje se envía, en caso contrario responderá que el
+        usuario no existe.}
+    \newItem{Mensaje público}{Mandar un mensaje público a todos los usuarios
+        disponibles.}{No responde y envía el mensaje a todos los usuarios.}
+    \newItem{Crear sala de chat}{Crear una nueva sala de chat con un nombre.}{Si
+        el nombre está disponible, se creará una sala con solo el usuario en
+        ella, en caso contrario responderá que la sala ya existe.}
+    \newItem{Invitar usuarios}{Invitar a uno o más usuarios a una sala a la que
+        pertenece el usuario.}{Si la sala y los usuarios invitados existen, el
+        servidor no responde e invita a cada usuario, en caso contrario
+        responderá que la sala (o el usuario) no existe.}
+    \newItem{Unirse a una sala}{Unirse a una sala a la que el usuario ha sido
+        invitado.}{Si la sala existe y el usuario fue invitado, el usuario se
+        unirá a la sala, en caso contrario el servidor responderá que el cuarto
+        no existe o que el usuario no fue invitado, según sea el caso.}
+    \newItem{Usuarios en la sala}{Solicita un diccionario con los usuarios de la
+        sala.}{Si la sala existe y el usuario pertenece a ella, el servidor
+        regresará un diccionario con los nombres y estados de los usuarios. Si la
+        sala existe pero el usuario no ha sido invitado o no se ha unido, el
+        servidor responderá que el usuario no se ha unido a la sala y, si la sala
+        no existe, el servidor transmitirá el mensaje.}
+    \newItem{Mensaje a una sala}{Mandar un mensaje a una sala}{Si la sala existe
+        y el usuario pertenece a ella, el servidor no responderá y envía el
+        mensaje a todos los usuarios de la sala. Si la sala existe pero el
+        usuario no ha sido invitado o no se ha unido, el servidor responderá que
+        el usuario no se ha unido a la sala y, si la sala no existe, el servidor
+        transmitirá el mensaje.}
+    \newItem{Abandonar una sala}{Abandar una sala a la que pertenece el
+        usuario.}{Si la sala existe y el usuario pertenece a ella, el servidor no
+        responderá y el usuario abandonara la sala. Si la sala existe pero el
+        usuario no ha sido invitado o no se ha unido, el servidor responderá que
+        el usuario no se ha unido a la sala y si la sala no existe el servidor
+        transmitirá el mensaje.}
+    \newItem{Desconectarse}{Desconectar al usuario del chat y abandonar todas
+        las salas a las que pertenece.}{No responde y el usuario se
+        desconecta. Si este pertenece a alguna sala, las abandona.}
+\end{itemize}
 
 
 \section*{Diseño}
