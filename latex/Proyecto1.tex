@@ -34,6 +34,15 @@
 \definecolor{readmecolor}{RGB}{40, 167, 69}
 \definecolor{txtcolor}{RGB}{0, 123, 255}
 
+% COMANDOS
+\newcommand{\newItem}[3]{
+  \item #1
+    \begin{itemize}
+      \item Petición del cliente: #2
+      \item Respuesta del servidor: #3
+    \end{itemize}
+}
+
 % ESTILO DE CÓDIGO
 \lstdefinestyle{mystyle}{
     backgroundcolor=\color{maincolor!10},
@@ -80,8 +89,8 @@
 
 % CAMBIAR COLOR DE ÍTEMS EN LISTAS
 \setlist[enumerate]{label=\textcolor{maincolor}{\arabic*.}, left=1.5em}
-\setlist[itemize]{label=\textcolor{maincolor}{\alph*}, left=1.5em}
 \setlist[itemize,1]{label=\textcolor{maincolor}{\textbullet}, left=1.5em}
+\setlist[itemize,2]{label=\textcolor{maincolor}{\textendash}, left=1.5em}
 
 
 % INICIO DEL DOCUMENTO
