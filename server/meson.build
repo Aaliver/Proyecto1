@@ -1,5 +1,3 @@
 server_sources = files('Servidor.c')
 
-executable('Servidor',
-           server_sources,
-           install: true)
+executable('Servidor', server_sources, install: true)
