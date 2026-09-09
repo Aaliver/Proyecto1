@@ -1,0 +1,4 @@
+PROJECT_NAME       = "Chat Multiusuario"
+INPUT              = server client tests
+RECURSIVE          = YES
+OUTPUT_DIRECTORY   = docs
