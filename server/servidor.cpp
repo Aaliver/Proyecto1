@@ -1,6 +1,6 @@
 #include <iostream>
 
 int main() {
-    std::cout << "Cliente!" << std::endl;
+    std::cout << "Servidor!" << std::endl;
     return 0;
 }

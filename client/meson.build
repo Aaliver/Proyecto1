@@ -1,6 +1,6 @@
 imgui_dep = dependency('imgui', fallback: ['imgui', 'imgui_dep'])
 
-client_sources = files('Cliente.cpp')
+client_sources = files('cliente.cpp')
 
 if imgui_dep.found()
     executable(

@@ -1,3 +1,3 @@
-server_sources = files('Servidor.c')
+server_sources = files('servidor.cpp')
 
 executable('Servidor', server_sources, install: true)
