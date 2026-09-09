@@ -8,3 +8,13 @@ project('chat-multiusuario', ['c', 'cpp'],
 subdir('server')
 subdir('client')
 subdir('tests')
+
+doxygen = find_program('doxygen', required : false)
+
+if doxygen.found()
+  custom_target('doc',
+    input : files('docs/Doxyfile'),
+    output : 'html',
+    command : [doxygen, '@INPUT@'],
+    build_by_default : false)
+endif
