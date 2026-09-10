@@ -13,7 +13,7 @@ doxygen = find_program('doxygen', required: false)
 if doxygen.found()
     custom_target(
         'docs',
-        input: files('docs/Doxyfile'),
+        input: files('Doxyfile'),
         output: 'html',
         command: [doxygen, '@INPUT@'],
         build_by_default: false,
