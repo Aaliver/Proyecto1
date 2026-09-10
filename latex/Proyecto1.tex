@@ -241,7 +241,17 @@ través de los mensajes que se envían.
 \section*{Diseño}
 \addcontentsline{toc}{section}{Diseño}
 
-
+\uml{Usuario}{
+    \private{nombre: string}
+    \private{estado: Estado}
+    \private{color: Color}
+}{
+    \public{Usuario(nombre : string)}
+    \public{getNombre(): string}
+    \public{setEstado(estado : Estado)}
+    \public{getEstado(): Estado}
+    \public{getColor(): Color}
+}
 
 \section*{Conclusión}
 \addcontentsline{toc}{section}{Conclusión}
