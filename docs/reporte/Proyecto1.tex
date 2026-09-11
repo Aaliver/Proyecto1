@@ -24,6 +24,8 @@
 \usepackage{titlesec}         % Para configurar \titleformat
 \usepackage{enumitem}         % Para configurar \setlist
 \usepackage[most]{tcolorbox}  % Para los cuadros de color
+\usepackage{lmodern}          % Para la familia de fuentes
+\usepackage[T1]{fontenc}      % Para codificación de fuente
 
 % CONFIGURACIONES Y COLORES
 \definecolor{maincolor}{RGB}{0, 51, 102}
@@ -39,18 +41,18 @@
 \newcommand{\newItem}[3]{
   \item {\color{maincolor}\textbf{#1}}
     \begin{itemize}
-      \item {\fontseries{sb}\selectfont Petición del cliente:} #2
-      \item {\fontseries{sb}\selectfont Respuesta del servidor:} #3
+      \item {\fontseries{b}\selectfont Petición del cliente:} #2
+      \item {\fontseries{b}\selectfont Respuesta del servidor:} #3
     \end{itemize}
 }
 
 \newcommand{\uml}[3]{
     \begin{center}
         \begin{tcolorbox}[colback=maincolor!10, colframe=maincolor,
-            colupper=black, fontupper=\small\ttfamily,
+            colupper=black, fontupper=\footnotesize\ttfamily,
             boxrule=0.2mm, arc=2pt,
             left=3pt, right=3pt, top=1pt, bottom=1pt, width=2.5in,
-            title={\centering\fontseries{sb}\selectfont #1},
+            title={\centering\fontseries{b}\selectfont\footnotesize #1},
             colbacktitle=maincolor!35,
             coltitle=black,
             toptitle=4pt, bottomtitle=4pt]
@@ -108,7 +110,7 @@
 % CONFIGURACIÓN DE ENCABEZADO Y PIE DE PÁGINA
 \pagestyle{fancy}
 \fancyhead[LO,L]{UNAM}
-\fancyhead[RO,R]{\textit{\textsc{Proyecto}}}
+\fancyhead[RO,R]{\textsc{Proyecto}}
 \fancyfoot[LO,L]{Facultad De Ciencias, 2027-I}
 \fancyfoot[CO,C]{\thepage}
 \fancyfoot[RO,R]{Modelado y Programación}
