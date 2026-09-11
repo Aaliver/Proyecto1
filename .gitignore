@@ -1,8 +1,4 @@
 builddir/
-subprojects/*
-!subprojects/*.wrap
+!reporte/*.tex
 
-*.aux
-*.log
-*.pdf
-*.toc
+html/
