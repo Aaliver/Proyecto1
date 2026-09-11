@@ -4,9 +4,10 @@ project(
     default_options: ['cpp_std=c++17', 'warning_level=2'],
 )
 
-subdir('server')
-subdir('client')
-subdir('tests')
+inc_dir = include_directories('include')
+
+subdir('src/main/client')
+subdir('src/main/server')
 
 doxygen = find_program('doxygen', required: false)
 

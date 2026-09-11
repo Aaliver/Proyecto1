@@ -1,5 +1,5 @@
 PROJECT_NAME       = "Chat Multiusuario"
-INPUT              = server client tests
+INPUT              = src include
 RECURSIVE          = YES
 OUTPUT_DIRECTORY   = ./docs
 GENERATE_LATEX     = NO
