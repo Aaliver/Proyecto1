@@ -3,6 +3,6 @@
 
 int main() {
 
-  std::cout << pinta(Color::Rojo, "Cliente!") << std::endl;
+  std::cout << pinta(randomColor(), "Cliente!") << std::endl;
   return 0;
 }
