@@ -1,6 +1,7 @@
 #include "usuario.hpp"
+#include <string>
 
-Usuario(string nombre) : nombre(nombre), estado(Estado::Active) {}
+Usuario::Usuario(std::string nombre) : nombre(nombre), estado(Estado::Active) {}
 
 std::string Usuario::getNombre() const {
   return nombre;
@@ -15,5 +16,5 @@ Estado Usuario::getEstado() const {
 }
 
 std::string Usuario::toColorString() const {
-  return color.pinta(nombre);
+  return pinta(color, nombre);
 }
