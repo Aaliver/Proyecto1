@@ -1,7 +1,8 @@
 #include "usuario.hpp"
 #include <string>
 
-Usuario::Usuario(std::string nombre) : nombre(nombre), estado(Estado::Active) {}
+Usuario::Usuario(std::string nombre) :
+  nombre(nombre), estado(Estado::Active), color(randomColor()) {}
 
 std::string Usuario::getNombre() const {
   return nombre;

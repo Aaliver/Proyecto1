@@ -26,7 +26,9 @@ enum class Color {
   /** El color magenta. */
   Magenta,
   /** El color cyan. */
-  Cyan
+  Cyan,
+  /** La cantidad total de colores. */
+  Count
 };
 
 

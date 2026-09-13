@@ -17,11 +17,14 @@ std::string pinta(Color color, const std::string& cadena) {
     codigo = "\033[35m"; break;
   case Color::Cyan:
     codigo = "\033[36m"; break;
+  default:
+    return cadena;
   }
   return codigo + cadena + reset;
 }
 
 Color randomColor() {
-  int i = std::rand() % 6;
+  constexpr size_t cantidad = static_cast<size_t>(Color::Count);
+  int i = std::rand() % cantidad;
   return static_cast<Color>(i);
 }
