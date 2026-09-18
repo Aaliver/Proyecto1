@@ -1,5 +1,5 @@
 PROJECT_NAME       = "Chat Multiusuario"
-INPUT              = src include
+INPUT              = src
 RECURSIVE          = YES
 OUTPUT_DIRECTORY   = ./docs
 GENERATE_LATEX     = NO

@@ -1,8 +1,13 @@
-server_sources = files('servidor.cpp')
+server_sources = files('argumentos.cpp')
+
+lib_server = static_library(
+    'server_core',
+    server_sources,
+)
 
 executable(
     'servidor',
-    server_sources,
-    include_directories: inc_dir,
+    'servidor.cpp',
+    link_with: lib_server,
     install: true,
 )
