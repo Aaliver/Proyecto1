@@ -8,6 +8,15 @@
 #include <string>
 
 /**
+ * @struct Configuracion
+ * @brief Representa la configuración de {@link Servidor}
+ */
+struct Configuracion {
+  /* El puerto. */
+  uint16_t puerto;
+};
+
+/**
  * @namespace Argumentos
  * @brief Funciones para validar los argumentos de entrada.
  */
@@ -18,5 +27,5 @@ namespace Argumentos {
    * @param argc La cantidad de entradas.
    * @param argv El arreglo con las entradas.
    */
-  void valida(int argc, char* argv[]);
+  Configuracion valida(int argc, char* argv[]);
 }
