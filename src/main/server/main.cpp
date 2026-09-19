@@ -11,7 +11,7 @@ int error(const char* mensaje) {
 int main(int argc, char* argv[]) {
 
   try {
-    Configuracion config = Argumentos::valida(argc, argv);
+    Configuracion config = Argumentos::validaServidor(argc, argv);
     Servidor servidor(config);
     return servidor.ejecuta();
   } catch (const std::exception& e) {

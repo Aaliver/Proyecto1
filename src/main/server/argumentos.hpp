@@ -1,7 +1,7 @@
 /**
  * @file argumentos.hpp
  * @brief Definición de las funciones que validan las entradas de
- *        {@link Servidor}.
+ *        {@link Servidor} y {@link Cliente}.
  */
 
 #pragma once
@@ -29,4 +29,11 @@ namespace Argumentos {
    * @param argv El arreglo con las entradas.
    */
   Configuracion validaServidor(int argc, char* argv[]);
+
+  /**
+   * @brief Verifica que las entradas del cliente sean validas.
+   * @param argc La cantidad de entradas.
+   * @param argv El arreglo con las entradas.
+   */
+  Configuracion validaCliente(int argc, char* argv[]);
 }

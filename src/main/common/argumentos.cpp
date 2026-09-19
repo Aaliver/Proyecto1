@@ -17,7 +17,7 @@ namespace {
   }
 }
 
-Configuracion Argumentos::valida(int argc, char* argv[]){
+Configuracion Argumentos::validaServidor(int argc, char* argv[]){
   validaCantidad(argc);
   Configuracion config;
   config.puerto = validaPuerto(argv[1]);
