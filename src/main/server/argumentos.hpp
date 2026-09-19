@@ -12,7 +12,8 @@
  * @brief Representa la configuración de {@link Servidor}
  */
 struct Configuracion {
-  /* El puerto. */
+  
+  /** El puerto. */
   uint16_t puerto;
 };
 
