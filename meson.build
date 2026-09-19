@@ -4,6 +4,9 @@ project(
     default_options: ['cpp_std=c++17', 'warning_level=2'],
 )
 
+common_inc = include_directories('src/main/common')
+
+subdir('src/main/common')
 subdir('src/main/client')
 subdir('src/main/server')
 
