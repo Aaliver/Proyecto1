@@ -5,6 +5,9 @@
 
 #pragma once
 #include "argumentos.hpp"
+#include "conexion.hpp"
+#include <string>
+#include <unordered_map>
 
 /**
  * @class Servidor
@@ -18,6 +21,8 @@ private:
   Configuracion config;
   /* El socket del servidor. */
   int serverSocket;
+  /* Las conexiones del servidor. */
+  std::unordered_map<std::string,Conexion> conexiones;
 
 public:
 

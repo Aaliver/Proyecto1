@@ -10,7 +10,7 @@ Servidor::Servidor(const Configuracion& config) :
 int Servidor::ejecuta() {
 
   if (serverSocket == -1)
-    throw std::runtime_error("Error al crear el socket del servidor\n");
+    throw std::runtime_error("Error al crear el socket del servidor");
 
   sockaddr_in serverAddress;
   serverAddress.sin_family = AF_INET;
@@ -19,14 +19,14 @@ int Servidor::ejecuta() {
 
   if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
     close(serverSocket);
-    throw std::runtime_error("Error al vincular el socket al puerto\n");
+    throw std::runtime_error("Error al vincular el socket al puerto");
   }
 
   std::printf("Servidor conectado!\n");
 
   if (listen(serverSocket, 5) == -1) {
     close(serverSocket);
-    throw std::runtime_error("Error al escuchar conexiones entrantes\n");
+    throw std::runtime_error("Error al escuchar conexiones entrantes");
   }
 
   std::printf("Esperando conexiones entrantes...\n");
@@ -34,7 +34,7 @@ int Servidor::ejecuta() {
   int clientSocket = accept(serverSocket, nullptr, nullptr);
   if (clientSocket == -1) {
     close(serverSocket);
-    throw std::runtime_error("Error al aceptar la conexión entrante\n");
+    throw std::runtime_error("Error al aceptar la conexión entrante");
   }
 
   std::printf("Conexión establecida con el cliente\n");
