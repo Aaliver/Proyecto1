@@ -1,4 +1,4 @@
-#include "argumentos.hpp"
+#include "configuracion.hpp"
 #include "servidor.hpp"
 #include <cstdio>
 #include <stdexcept>
@@ -11,7 +11,7 @@ int error(const char* mensaje) {
 int main(int argc, char* argv[]) {
 
   try {
-    Configuracion config = Argumentos::validaServidor(argc, argv);
+    Configuracion config = Argumentos::valida(argc, argv);
     Servidor servidor(config);
     return servidor.ejecuta();
   } catch (const std::exception& e) {
