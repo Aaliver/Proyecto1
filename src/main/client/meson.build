@@ -5,6 +5,7 @@ lib_client = static_library(
     client_sources,
     include_directories: common_inc,
     link_with: lib_common,
+    dependencies: json_dep,
 )
 
 executable(

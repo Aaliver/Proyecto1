@@ -2,3 +2,5 @@ builddir/
 docs/reporte/*
 !docs/reporte/*.tex
 html/
+subprojects/*
+!subprojects/*.wrap

@@ -4,6 +4,8 @@ project(
     default_options: ['cpp_std=c++17', 'warning_level=2'],
 )
 
+json_dep = dependency('nlohmann_json', required: true)
+
 common_inc = include_directories('src/main/common')
 
 subdir('src/main/common')
