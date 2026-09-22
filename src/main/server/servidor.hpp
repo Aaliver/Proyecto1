@@ -36,4 +36,22 @@ public:
    * @brief Inicia el servidor.
    */
   int ejecuta();
+
+  /**
+   * @brief Desconecta el servidor.
+   */
+  int desconectarse();
+
+  /**
+   * @brief Lee solicitudes del {@link Cliente}.
+   * @param clientSocket el socket del cliente del que lee.
+   */
+  void leerSolicitud(int clientSocket);
+
+  /**
+   * @brief Responde solicitudes del {@link Cliente}.
+   * @param mensaje el mensaje con el que responde.
+   * @param clientSocket el socket del cliente al que responde.
+   */
+  void responderSolicitud(const std::string& mensaje, int clientSocket);
 };

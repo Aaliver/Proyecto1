@@ -1,4 +1,5 @@
 #include "servidor.hpp"
+#include "controlador.hpp"
 #include <cstdio>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -39,15 +40,33 @@ int Servidor::ejecuta() {
 
   std::printf("Conexión establecida con el cliente\n");
 
-  // const char* message = "Hola desde el servidor";
-  // send(clientSocket, message, strlen(message), 0);
+  while (true) {
+      leerSolicitud(clientSocket);
+  }
 
-  char buffer[1024] = {0};
-  recv(clientSocket, buffer, sizeof(buffer), 0);
-  std::printf("Mensaje del cliente: %s\n", buffer);
+  return desconectarse();
+}
 
-  // close(clientSocket);
+int Servidor::desconectarse() {
+  // for (const auto& [nombre, conexion] : conexiones) {
+  //   conexion.desconecta();
+  // }
   close(serverSocket);
-
+  //conectado = false;
   return 0;
+}
+
+void Servidor::leerSolicitud(int clientSocket) {
+  char buffer[1024] = {0};
+  ssize_t bytes = recv(clientSocket, buffer, sizeof(buffer), 0);
+
+ std::string mensaje(buffer, bytes);
+ std::printf(">> %s\n", mensaje.c_str());
+
+ std::string respuesta = Controlador::procesa(mensaje);
+ responderSolicitud(respuesta, clientSocket);
+}
+
+void Servidor::responderSolicitud(const std::string& mensaje, int clientSocket) {
+  send(clientSocket, mensaje.c_str(), mensaje.length(), 0);
 }
