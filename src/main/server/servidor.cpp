@@ -37,11 +37,12 @@ int Servidor::ejecuta() {
     close(serverSocket);
     throw std::runtime_error("Error al aceptar la conexión entrante");
   }
+  Conexion conexion(conexiones.size(), clientSocket);
 
   std::printf("Conexión establecida con el cliente\n");
 
   while (true) {
-      leerSolicitud(clientSocket);
+      leerSolicitud(conexion);
   }
 
   return desconectarse();
@@ -56,17 +57,31 @@ int Servidor::desconectarse() {
   return 0;
 }
 
-void Servidor::leerSolicitud(int clientSocket) {
-  char buffer[1024] = {0};
-  ssize_t bytes = recv(clientSocket, buffer, sizeof(buffer), 0);
+void Servidor::leerSolicitud(Conexion conexion) {
+  constexpr std::size_t LIMITE = 1024 * 1024;
+  char buffer[LIMITE] = {0};
+  ssize_t bytes = recv(conexion.getSocket(), buffer, sizeof(buffer), 0);
+  if (bytes <= 0) {
+    Controlador::desconectar(conexion);
+    return;
+  }
 
  std::string mensaje(buffer, bytes);
  std::printf(">> %s\n", mensaje.c_str());
 
- std::string respuesta = Controlador::procesa(mensaje);
- responderSolicitud(respuesta, clientSocket);
+ Resultado resultado = Controlador::procesa(mensaje, conexion, conexiones);
+ obtenerRespuesta(resultado, conexion);
 }
 
-void Servidor::responderSolicitud(const std::string& mensaje, int clientSocket) {
-  send(clientSocket, mensaje.c_str(), mensaje.length(), 0);
+void Servidor::obtenerRespuesta(Resultado resultado, Conexion conexion) {
+  responderSolicitud(resultado.mensaje, conexion);
+  if (!resultado.exito)
+    Controlador::desconectar(conexion);
+  if (resultado.notificar)
+    for (const auto& [llave, valor] : conexiones)
+      responderSolicitud(resultado.mensajeConexiones, valor);
+}
+
+void Servidor::responderSolicitud(const std::string& respuesta, Conexion conexion) {
+    send(conexion.getSocket(), respuesta.c_str(), respuesta.length(), 0);
 }

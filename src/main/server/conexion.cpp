@@ -1,8 +1,11 @@
 #include "conexion.hpp"
 
-Conexion::Conexion(std::string nombre, int numero) :
-  nombre(nombre), numero(numero) {}
+Conexion::Conexion(int numero, int socket) : numero(numero), socket(socket) {}
 
 int Conexion::getNumero() {
   return numero;
+}
+
+int Conexion::getSocket() {
+  return socket;
 }

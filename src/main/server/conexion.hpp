@@ -4,7 +4,6 @@
  */
 
 #pragma once
-#include <string>
 
 /**
  * @class Conexion
@@ -14,23 +13,29 @@ class Conexion {
 
 private:
 
-  /* El nombre de la conexión. */
-  std::string nombre;
   /* El número de la conexión. */
   int numero;
+  /* El socket. */
+  int socket;
 
 public:
 
   /**
    * El constructor.
-   * @param nombre el nombre de la conexión.
    * @param numero el número de la conexión.
+      * @param socket el socket de la conexión.
    */
-  Conexion(std::string nombre, int numero);
+  Conexion(int numero, int socket);
 
   /**
    * Regresa el número de la conexión.
    * @return el número de la conexión.
    */
   int getNumero();
+
+  /**
+   * Regresa el socket de la conexión.
+   * @return el socket de la conexión.
+   */
+  int getSocket();
 };

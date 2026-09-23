@@ -4,8 +4,9 @@
  */
 
 #pragma once
-#include "configuracion.hpp"
 #include "conexion.hpp"
+#include "configuracion.hpp"
+#include "resultado.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -46,12 +47,19 @@ public:
    * @brief Lee solicitudes del {@link Cliente}.
    * @param clientSocket el socket del cliente del que lee.
    */
-  void leerSolicitud(int clientSocket);
+  void leerSolicitud(Conexion conexion);
 
   /**
-   * @brief Responde solicitudes del {@link Cliente}.
-   * @param mensaje el mensaje con el que responde.
-   * @param clientSocket el socket del cliente al que responde.
+   * @brief Obtiene la respuesta de las solicitudes del {@link Cliente}.
+   * @param resultado el resultado de la solicitud.
+   * @param conexion la conexion de la que procesa la solicitud.
    */
-  void responderSolicitud(const std::string& mensaje, int clientSocket);
+  void obtenerRespuesta(Resultado resultado, Conexion conexion);
+
+  /**
+   * @brief Responde la solicitud del {@link Cliente}.
+   * @param respuesta la respuesta que envia.
+   * @param conexion la conexion a la que responde.
+   */
+  void responderSolicitud(const std::string& respuesta, Conexion conexion);
 };
