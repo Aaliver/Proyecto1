@@ -19,7 +19,7 @@ private:
   /* El nombre del usuario. */
   std::string nombre;
   /* El estado del usuario. */
-  Estado estado;
+  EstadoConexion estado;
   /* El color del usuario. */
   Color color;
 
@@ -41,13 +41,13 @@ public:
    * @brief Define el estado del usuario.
    * @param estado el estado del usuario.
    */
-  void setEstado(Estado estado);
+  void setEstado(EstadoConexion estado);
 
   /**
    * @brief Regresa el estado del usuario.
    * @return el estado del usuario.
    */
-  Estado getEstado() const;
+  EstadoConexion getEstado() const;
 
   /**
    * @brief Regresa una representación en cadena de color del nombre de usuario.

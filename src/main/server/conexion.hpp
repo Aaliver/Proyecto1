@@ -4,6 +4,7 @@
  */
 
 #pragma once
+#include "estado.hpp"
 
 /**
  * @class Conexion
@@ -15,8 +16,10 @@ private:
 
   /* El número de la conexión. */
   int numero;
-  /* El socket. */
+  /* El socket de la conexión. */
   int socket;
+  /* El estado de la conexión. */
+  EstadoConexion estado;
 
 public:
 
@@ -38,4 +41,10 @@ public:
    * @return el socket de la conexión.
    */
   int getSocket();
+
+  /**
+   * Regresa el estado de la conexión.
+   * @return el estado de la conexión.
+   */
+  EstadoConexion getEstado();
 };

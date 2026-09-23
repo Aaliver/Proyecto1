@@ -9,3 +9,7 @@ int Conexion::getNumero() {
 int Conexion::getSocket() {
   return socket;
 }
+
+EstadoConexion Conexion::getEstado() {
+  return estado;
+}

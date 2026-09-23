@@ -2,17 +2,17 @@
 #include <string>
 
 Usuario::Usuario(std::string nombre) :
-  nombre(nombre), estado(Estado::Active), color(randomColor()) {}
+  nombre(nombre), estado(EstadoConexion::ACTIVE), color(randomColor()) {}
 
 std::string Usuario::getNombre() const {
   return nombre;
 }
 
-void Usuario::setEstado(Estado estado) {
+void Usuario::setEstado(EstadoConexion estado) {
   this->estado = estado;
 }
 
-Estado Usuario::getEstado() const {
+EstadoConexion Usuario::getEstado() const {
   return estado;
 }
 
