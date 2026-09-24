@@ -1,4 +1,4 @@
-common_sources = files('configuracion.cpp', 'mensaje.cpp', 'estado.cpp')
+common_sources = files('mensaje.cpp', 'estado.cpp')
 
 lib_common = static_library(
     'common',

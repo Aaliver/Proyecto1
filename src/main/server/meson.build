@@ -1,4 +1,9 @@
-server_sources = files('servidor.cpp', 'controlador.cpp', 'conexion.cpp')
+server_sources = files(
+    'servidor.cpp',
+    'configuracion.cpp',
+    'controlador.cpp',
+    'conexion.cpp',
+)
 
 lib_server = static_library(
     'server_core',

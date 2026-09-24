@@ -1,4 +1,9 @@
-client_sources = files('cliente.cpp', 'parametros.cpp', 'usuario.cpp', 'color.cpp')
+client_sources = files(
+    'cliente.cpp',
+    'parametros.cpp',
+    'usuario.cpp',
+    'color.cpp',
+)
 
 lib_client = static_library(
     'client_core',
