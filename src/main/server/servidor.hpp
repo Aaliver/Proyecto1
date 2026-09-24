@@ -41,25 +41,31 @@ public:
   /**
    * @brief Desconecta el servidor.
    */
-  int desconectarse();
+  int desconecta();
 
   /**
    * @brief Lee solicitudes del {@link Cliente}.
-   * @param clientSocket el socket del cliente del que lee.
+   * @param conexion la conexión de la que lee.
    */
-  void leerSolicitud(Conexion conexion);
+  void leerSolicitud(Conexion& conexion);
 
   /**
    * @brief Obtiene la respuesta de las solicitudes del {@link Cliente}.
    * @param resultado el resultado de la solicitud.
    * @param conexion la conexion de la que procesa la solicitud.
    */
-  void obtenerRespuesta(Resultado resultado, Conexion conexion);
+  void obtenerRespuesta(const Resultado& resultado, Conexion conexion);
 
   /**
-   * @brief Responde la solicitud del {@link Cliente}.
-   * @param respuesta la respuesta que envia.
-   * @param conexion la conexion a la que responde.
+   * @brief Notifica un mensaje a todos los clientes.
+   * @param mensaje el mensaje que notifica.
    */
-  void responderSolicitud(const std::string& respuesta, Conexion conexion);
+  void notificar(const std::string& mensaje);
+
+  /**
+   * @brief Enviar un mensaje al {@link Cliente}.
+   * @param mensaje el mensaje que envia.
+   * @param conexion la conexion a la que envia el mensaje.
+   */
+  void enviarMensaje(const std::string& mensaje, Conexion conexion);
 };

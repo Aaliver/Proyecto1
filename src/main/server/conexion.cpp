@@ -1,15 +1,32 @@
 #include "conexion.hpp"
+#include <unistd.h>
 
 Conexion::Conexion(int numero, int socket) : numero(numero), socket(socket) {}
 
-int Conexion::getNumero() {
+void Conexion::setUsuario(std::string usuario) {
+  this->usuario = usuario;
+}
+
+std::string Conexion::getUsuario() const {
+  return usuario;
+}
+
+int Conexion::getNumero() const {
   return numero;
 }
 
-int Conexion::getSocket() {
+int Conexion::getSocket() const {
   return socket;
 }
 
-EstadoConexion Conexion::getEstado() {
+void Conexion::setEstado(EstadoConexion estado) {
+  this->estado = estado;
+}
+
+EstadoConexion Conexion::getEstado() const {
   return estado;
+}
+
+int Conexion::desconecta() {
+  return close(socket);
 }

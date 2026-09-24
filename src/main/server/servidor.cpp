@@ -45,24 +45,21 @@ int Servidor::ejecuta() {
       leerSolicitud(conexion);
   }
 
-  return desconectarse();
+  return desconecta();
 }
 
-int Servidor::desconectarse() {
-  // for (const auto& [nombre, conexion] : conexiones) {
-  //   conexion.desconecta();
-  // }
-  close(serverSocket);
-  //conectado = false;
-  return 0;
+int Servidor::desconecta() {
+  for (const auto& [nombre, conexion] : conexiones)
+    notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
+  return close(serverSocket);
 }
 
-void Servidor::leerSolicitud(Conexion conexion) {
+void Servidor::leerSolicitud(Conexion& conexion) {
   constexpr std::size_t LIMITE = 1024 * 1024;
   char buffer[LIMITE] = {0};
   ssize_t bytes = recv(conexion.getSocket(), buffer, sizeof(buffer), 0);
   if (bytes <= 0) {
-    Controlador::desconectar(conexion);
+    notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
     return;
   }
 
@@ -73,15 +70,22 @@ void Servidor::leerSolicitud(Conexion conexion) {
  obtenerRespuesta(resultado, conexion);
 }
 
-void Servidor::obtenerRespuesta(Resultado resultado, Conexion conexion) {
-  responderSolicitud(resultado.mensaje, conexion);
+void Servidor::obtenerRespuesta(const Resultado& resultado, Conexion conexion) {
+  if (resultado.mensaje.has_value()) {
+    const auto& [respuesta, usuario] = resultado.mensaje.value();
+    enviarMensaje(respuesta, usuario);
+  }
   if (!resultado.exito)
-    Controlador::desconectar(conexion);
+    notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
   if (resultado.notificar)
-    for (const auto& [llave, valor] : conexiones)
-      responderSolicitud(resultado.mensajeConexiones, valor);
+    notificar(resultado.mensajeConexiones);
 }
 
-void Servidor::responderSolicitud(const std::string& respuesta, Conexion conexion) {
-    send(conexion.getSocket(), respuesta.c_str(), respuesta.length(), 0);
+void Servidor::notificar(const std::string& mensaje) {
+  for (const auto& [nombre, conexion] : conexiones)
+    enviarMensaje(mensaje, conexion);
+}
+
+void Servidor::enviarMensaje(const std::string& mensaje, Conexion conexion) {
+    send(conexion.getSocket(), mensaje.c_str(), mensaje.length(), 0);
 }
