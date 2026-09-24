@@ -4,6 +4,9 @@
  */
 
 #pragma once
+#include "estado.hpp"
+#include <nlohmann/json.hpp>
+#include <string>
 #include <string_view>
 
 /**
@@ -71,15 +74,57 @@ enum class MensajeServidor {
 };
 
 /**
- * @brief Regresa una cadena del tipo de mensaje.
- * @param mensaje el mensaje.
- * @return una cadena del tipo de mensaje.
+ * @namespace Mensaje
+ * @brief Funciones para la construcción de los mensajes del {@link Cliente} y del
+ *        {@link Servidor}.
  */
-std::string_view tipo(MensajeCliente mensaje);
+namespace Mensaje {
 
-/**
- * @brief Regresa una cadena del tipo de mensaje.
- * @param mensaje el mensaje.
- * @return una cadena del tipo de mensaje.
- */
-std::string_view tipo(MensajeServidor mensaje);
+  /**
+   * @brief Regresa una cadena del tipo de mensaje.
+   * @param mensaje el mensaje.
+   * @return una cadena del tipo de mensaje.
+   */
+  std::string_view getString(MensajeCliente mensaje);
+
+    /**
+   * @brief Regresa una cadena del tipo de mensaje.
+   * @param mensaje el mensaje.
+   * @return una cadena del tipo de mensaje.
+   */
+  std::string_view getString(MensajeServidor mensaje);
+
+  /**
+   * @brief Regresa un enum del tipo de mensaje del cliente.
+   * @param mensaje el mensaje.
+   * @return un enum del tipo de mensaje.
+   */
+  MensajeCliente getMsjCliente(const std::string& mensaje);
+
+    /**
+   * @brief Regresa un enum del tipo de mensaje del servidor.
+   * @param mensaje el mensaje.
+   * @return un enum del tipo de mensaje.
+   */
+  MensajeServidor getMsjServidor(const std::string& mensaje);
+
+  /**
+   * @brief Crea un mensaje del cliente.
+   * @param datos los datos del mensaje.
+   */
+  std::string crea(const nlohmann::json& datos = {});
+
+  /**
+   * @brief Obten los datos del mensaje.
+   * @param mensaje el mensaje del que obtener los datos.
+   * @return los datos del mensaje.
+   */
+  nlohmann::json obtener(const std::string& mensaje);
+
+  /**
+   * @brief Regresa el estado del mensaje.
+   * @param mensaje el mensaje del que obtener el estado.
+   * @return el estado del mensaje.
+   */
+  EstadoConexion getEstado(const nlohmann::json& mensaje);
+};

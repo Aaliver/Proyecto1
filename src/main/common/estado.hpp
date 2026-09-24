@@ -8,7 +8,7 @@
 #include <string_view>
 
 /**
- * @enum Estado
+ * @enum EstadoConexion
  * @brief Enumeración para el estado del {@link Usuario}.
  */
 enum class EstadoConexion {
@@ -23,7 +23,7 @@ enum class EstadoConexion {
 
 /**
  * @namespace Estado
- * @brief Funciones para la enum {@link Estado}.
+ * @brief Funciones para la enum {@link EstadoConexion}.
  */
 namespace Estado {
 
@@ -32,7 +32,7 @@ namespace Estado {
    * @param estado el estado del cual regresar una cadena.
    * @return una representación en cadena del estado.
    **/
-  std::string_view toString(EstadoConexion estado);
+  std::string_view getString(EstadoConexion estado);
 
   /**
    * @brief Regresa el enunm del estado.

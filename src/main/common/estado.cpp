@@ -1,6 +1,6 @@
 #include "estado.hpp"
 
-std::string_view toString(EstadoConexion estado) {
+std::string_view Estado::getString(EstadoConexion estado) {
     switch (estado) {
     case EstadoConexion::ACTIVE: return "ACTIVE";
     case EstadoConexion::AWAY:   return "AWAY";
@@ -8,7 +8,7 @@ std::string_view toString(EstadoConexion estado) {
     }
 }
 
-EstadoConexion getEstado(std::string estado) {
+EstadoConexion Estado::getEstado(std::string estado) {
   if (estado == "ACTIVE")
     return EstadoConexion::ACTIVE;
   else if (estado == "AWAY")
