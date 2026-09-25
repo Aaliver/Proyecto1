@@ -71,6 +71,8 @@ enum class MensajeServidor {
   LEFT_ROOM,
   /** El mensaje de desconexión. */
   DISCONNECTED,
+  /** El mensaje inválido. */
+  INVALID
 };
 
 /**

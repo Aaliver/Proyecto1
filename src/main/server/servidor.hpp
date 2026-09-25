@@ -63,9 +63,9 @@ public:
   void notificar(const std::string& mensaje);
 
   /**
-   * @brief Enviar un mensaje al {@link Cliente}.
+   * @brief Envia un mensaje al {@link Cliente}.
    * @param mensaje el mensaje que envia.
    * @param conexion la conexion a la que envia el mensaje.
    */
-  void enviarMensaje(const std::string& mensaje, Conexion conexion);
+  void enviaMensaje(const std::string& mensaje, Conexion conexion);
 };

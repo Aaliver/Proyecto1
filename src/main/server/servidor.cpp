@@ -37,7 +37,7 @@ int Servidor::ejecuta() {
     close(serverSocket);
     throw std::runtime_error("Error al aceptar la conexión entrante");
   }
-  Conexion conexion(conexiones.size(), clientSocket);
+  Conexion conexion(conexiones.size() + 1, clientSocket);
 
   std::printf("Conexión establecida con el cliente\n");
 
@@ -49,7 +49,7 @@ int Servidor::ejecuta() {
 }
 
 int Servidor::desconecta() {
-  for (const auto& [nombre, conexion] : conexiones)
+  for (auto& [nombre, conexion] : conexiones)
     notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
   return close(serverSocket);
 }
@@ -63,8 +63,8 @@ void Servidor::leerSolicitud(Conexion& conexion) {
     return;
   }
 
- std::string mensaje(buffer, bytes);
- std::printf(">> %s\n", mensaje.c_str());
+ const std::string mensaje(buffer, bytes);
+ std::printf(">> [%d]: %s", conexion.getNumero(), mensaje.c_str());
 
  Resultado resultado = Controlador::procesa(mensaje, conexion, conexiones);
  obtenerRespuesta(resultado, conexion);
@@ -73,7 +73,7 @@ void Servidor::leerSolicitud(Conexion& conexion) {
 void Servidor::obtenerRespuesta(const Resultado& resultado, Conexion conexion) {
   if (resultado.mensaje.has_value()) {
     const auto& [respuesta, usuario] = resultado.mensaje.value();
-    enviarMensaje(respuesta, usuario);
+    enviaMensaje(respuesta, usuario);
   }
   if (!resultado.exito)
     notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
@@ -83,9 +83,9 @@ void Servidor::obtenerRespuesta(const Resultado& resultado, Conexion conexion) {
 
 void Servidor::notificar(const std::string& mensaje) {
   for (const auto& [nombre, conexion] : conexiones)
-    enviarMensaje(mensaje, conexion);
+    enviaMensaje(mensaje, conexion);
 }
 
-void Servidor::enviarMensaje(const std::string& mensaje, Conexion conexion) {
+void Servidor::enviaMensaje(const std::string& mensaje, Conexion conexion) {
     send(conexion.getSocket(), mensaje.c_str(), mensaje.length(), 0);
 }
