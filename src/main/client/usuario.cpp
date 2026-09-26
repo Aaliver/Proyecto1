@@ -16,6 +16,14 @@ EstadoConexion Usuario::getEstado() const {
   return estado;
 }
 
+bool Usuario::setConectado(bool conectado) {
+  this->conectado = conectado;
+}
+
+bool Usuario::isConectado() const {
+  return conectado;
+}
+
 std::string Usuario::toColorString() const {
   return pinta(color, nombre);
 }

@@ -20,6 +20,8 @@ private:
   std::string nombre;
   /* El estado del usuario. */
   EstadoConexion estado;
+  /* El estado de la conexión al servidor. */
+  bool conectado;
   /* El color del usuario. */
   Color color;
 
@@ -48,6 +50,18 @@ public:
    * @return el estado del usuario.
    */
   EstadoConexion getEstado() const;
+
+  /**
+   * @brief Define el estado de la conexión del usuario.
+   * @param conectado el estado de la conexión del usuario.
+   */
+  bool setConectado(bool conectado);
+
+  /**
+   * @brief Nos dice si el usuario esta conectado.
+   * @return true si el usuario esta conectado, false en otro caso.
+   */
+  bool isConectado() const;
 
   /**
    * @brief Regresa una representación en cadena de color del nombre de usuario.
