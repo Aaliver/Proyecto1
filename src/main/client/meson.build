@@ -1,8 +1,8 @@
 client_sources = files(
     'cliente.cpp',
     'parametros.cpp',
+    'controlador.cpp',
     'usuario.cpp',
-    'color.cpp',
 )
 
 lib_client = static_library(

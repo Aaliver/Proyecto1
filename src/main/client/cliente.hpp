@@ -5,6 +5,7 @@
 
 #pragma once
 #include "usuario.hpp"
+#include <string>
 
 /**
  * @class Cliente
@@ -16,8 +17,10 @@ private:
 
   /* El usuario del cliente. */
   Usuario usuario;
-  /* El puerto. */
+  /* El puerto del servidor. */
   int puerto;
+  /* El socket del cliente. */
+  int clientSocket;
 
 public:
 
@@ -32,4 +35,24 @@ public:
    * @brief Inicia el cliente.
    */
   int ejecuta();
+
+  /**
+   * @brief Conecta el cliente al {@link Servidor}.
+   */
+  void conecta();
+
+  /**
+   * @brief Desconecta el cliente.
+   */
+  int desconecta();
+
+  /**
+   * @brief Hace una solicitud al servidor.
+   */
+  void hacerSolicitud(const std::string& mensaje);
+
+  /**
+   * @brief Recibe un mensaje del servidor.
+   */
+  void recibeMensaje();
 };

@@ -10,6 +10,8 @@ int error(const char* mensaje) {
 
 int main(int argc, char* argv[]) {
 
+  std::srand(std::time(nullptr));
+
   try {
     Parametros param = Argumentos::valida(argc, argv);
     Cliente cliente(Usuario(param.nombre), param.puerto);
