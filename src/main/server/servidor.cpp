@@ -1,5 +1,6 @@
 #include "servidor.hpp"
 #include "controlador.hpp"
+#include "vista.hpp"
 #include <cstdio>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -20,26 +21,26 @@ int Servidor::ejecuta() {
 
   if (bind(serverSocket, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) == -1) {
     close(serverSocket);
-    throw std::runtime_error("Error al vincular el socket al puerto");
+    throw std::runtime_error("Error al vincular el socket al puerto.");
   }
 
-  std::printf("Servidor conectado!\n");
+  Vista::muestraMensaje("Servidor conectado!");
 
   if (listen(serverSocket, 5) == -1) {
     close(serverSocket);
-    throw std::runtime_error("Error al escuchar conexiones entrantes");
+    throw std::runtime_error("Error al escuchar conexiones entrantes.");
   }
 
-  std::printf("Esperando conexiones entrantes...\n");
+  Vista::muestraMensaje("Esperando conexiones entrantes...");
 
   int clientSocket = accept(serverSocket, nullptr, nullptr);
   if (clientSocket == -1) {
     close(serverSocket);
-    throw std::runtime_error("Error al aceptar la conexión entrante");
+    throw std::runtime_error("Error al aceptar la conexión entrante.");
   }
   Conexion conexion(conexiones.size() + 1, clientSocket);
 
-  std::printf("Conexión establecida con el cliente\n");
+  Vista::muestraMensaje("Conexión establecida con el cliente.");
 
   while (true) {
       leerSolicitud(conexion);
@@ -64,7 +65,7 @@ void Servidor::leerSolicitud(Conexion& conexion) {
   }
 
  const std::string mensaje(buffer, bytes);
- std::printf(">> [%d]: %s", conexion.getNumero(), mensaje.c_str());
+ Vista::muestraMensaje(">> [%d]: %s", conexion.getNumero(), mensaje.c_str());
 
  Resultado resultado = Controlador::procesa(mensaje, conexion, conexiones);
  obtenerRespuesta(resultado, conexion);
