@@ -58,7 +58,6 @@ std::string_view Mensaje::getString(MensajeServidor mensaje) {
   case MensajeServidor::ROOM_TEXT_FROM:      return "ROOM_TEXT_FROM";
   case MensajeServidor::LEFT_ROOM:           return "LEFT_ROOM";
   case MensajeServidor::DISCONNECTED:        return "DISCONNECTED";
-  case MensajeServidor::INVALID:             return "INVALID";
   }
 }
 
@@ -85,8 +84,6 @@ MensajeServidor Mensaje::getMsjServidor(const std::string& mensaje) {
     return MensajeServidor::ROOM_TEXT_FROM;
   else if (mensaje == "LEFT_ROOM")
     return MensajeServidor::LEFT_ROOM;
-  else if (mensaje == "INVALID")
-    return MensajeServidor::INVALID;
   else
     return MensajeServidor::DISCONNECTED;
 }
