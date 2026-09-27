@@ -1,7 +1,5 @@
 #include "cliente.hpp"
 #include "controlador.hpp"
-#include "mensaje.hpp"
-#include "usuario.hpp"
 #include "vista.hpp"
 #include <cstdio>
 #include <cstring>
@@ -30,7 +28,7 @@ int Cliente::ejecuta() {
     throw std::runtime_error("Error al conectar al servidor.");
   }
 
-  hacerSolicitud(Controlador::conectar(usuario));
+  hacerSolicitud(Controlador::identifica(usuario));
 
   while (usuario.isConectado()){
     constexpr std::size_t LIMITE = 1024 * 1024;
@@ -39,14 +37,13 @@ int Cliente::ejecuta() {
     if (bytes <= 0)
       break;
     std::string mensaje(buffer, bytes);
-    Controlador::procesa(mensaje, usuario);
+    Controlador::procesaMensaje(mensaje);
   }
 
   return desconecta();
 }
 
 int Cliente::desconecta() {
-  usuario.setConectado(false);
   return close(clientSocket);
 }
 
