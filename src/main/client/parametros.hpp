@@ -12,10 +12,12 @@
  */
 struct Parametros {
 
-  /** El puerto. */
-  uint16_t puerto;
   /** El nombre. */
   std::string nombre;
+  /** El puerto. */
+  uint16_t puerto;
+  /** La ip. */
+  std::string ip;
 };
 
 /**

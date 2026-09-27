@@ -1,6 +1,6 @@
 /**
  * @file cliente.cpp
- * @brief Definición deñ cliente.
+ * @brief Definición del cliente.
  */
 
 #pragma once
@@ -19,6 +19,8 @@ private:
   Usuario usuario;
   /* El puerto del servidor. */
   int puerto;
+  /* La ip del servidor. */
+  std::string ip;
   /* El socket del cliente. */
   int clientSocket;
 
@@ -29,7 +31,7 @@ public:
    * @param usuario el usuario.
    * @param puerto el puerto.
    */
-  Cliente(Usuario usuario, int puerto);
+  Cliente(Usuario usuario, int puerto, std::string ip);
 
   /**
    * @brief Inicia el cliente.

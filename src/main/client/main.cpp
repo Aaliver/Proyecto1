@@ -14,7 +14,7 @@ int main(int argc, char* argv[]) {
 
   try {
     Parametros param = Argumentos::valida(argc, argv);
-    Cliente cliente(Usuario(param.nombre), param.puerto);
+    Cliente cliente(Usuario(param.nombre), param.puerto, param.ip);
     return cliente.ejecuta();
   } catch (const std::exception& e) {
     return error(e.what());

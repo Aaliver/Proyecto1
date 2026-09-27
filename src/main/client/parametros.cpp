@@ -12,8 +12,8 @@ namespace {
   }
 }
 
-Parametros Argumentos::valida(int argc, char* argv[]){
-  if (argc != 5)
+Parametros Argumentos::valida(int argc, char* argv[]) {
+  if (argc != 7)
     throw std::runtime_error("Cantidad incorrecta de argumentos.");
   Parametros param;
   for (int i = 1; i < argc; i++)
@@ -21,6 +21,10 @@ Parametros Argumentos::valida(int argc, char* argv[]){
       if (argc <= ++i)
 	throw std::runtime_error("Puerto no definido.");
       param.puerto = validaPuerto(argv[i]);
+    } else if ("-i") {
+      if (argc <= ++i)
+	throw std::runtime_error("Dirección ip no definida.");
+      param.ip = argv[i];
     } else if ("-u") {
       if (argc <= ++i)
 	throw std::runtime_error("Nombre de usuario no definido.");

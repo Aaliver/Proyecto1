@@ -1,6 +1,7 @@
 #include "cliente.hpp"
 #include "controlador.hpp"
 #include "vista.hpp"
+#include <arpa/inet.h>
 #include <cstdio>
 #include <cstring>
 #include <ctime>
@@ -8,8 +9,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-Cliente::Cliente(Usuario usuario, int puerto) :
-  usuario(usuario), puerto(puerto), clientSocket(socket(AF_INET, SOCK_STREAM, 0)) {}
+Cliente::Cliente(Usuario usuario, int puerto, std::string ip) :
+  usuario(usuario), puerto(puerto), ip(ip),
+  clientSocket(socket(AF_INET, SOCK_STREAM, 0)) {}
 
 int Cliente::ejecuta() {
 
@@ -19,7 +21,8 @@ int Cliente::ejecuta() {
   sockaddr_in serverAddress;
   serverAddress.sin_family = AF_INET;
   serverAddress.sin_port = htons(puerto);
-  serverAddress.sin_addr.s_addr = INADDR_ANY;
+  if (inet_pton(AF_INET, ip.c_str(), &serverAddress.sin_addr) != 1)
+    throw std::runtime_error("Dirección IP inválida.");
 
   Vista::muestraMensaje("Esperando conexión con el servidor...");
 
