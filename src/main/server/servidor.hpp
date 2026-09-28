@@ -6,8 +6,11 @@
 #pragma once
 #include "conexion.hpp"
 #include "configuracion.hpp"
+#include <mutex>
 #include <string>
+#include <thread>
 #include <unordered_map>
+#include <vector>
 
 /**
  * @class Servidor
@@ -25,6 +28,8 @@ private:
   std::unordered_map<std::string,Conexion> conexiones;
   /* Los hilos del servidor. */
   std::vector<std::thread> hilos;
+  /* El mutex del diccionario de conexiones. */
+  mutable std::mutex mtx;
 
 public:
 

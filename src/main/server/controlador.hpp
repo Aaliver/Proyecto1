@@ -7,6 +7,7 @@
 #include "conexion.hpp"
 #include "mensaje.hpp"
 #include "resultado.hpp"
+#include <mutex>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <unordered_map>
@@ -22,10 +23,12 @@ namespace Controlador {
    * @param mensaje el mensaje a procesar.
    * @param conexion la conexion que envio el mensaje.
    * @param conexiones el diccionario con las conexiones del servidor.
+   * @param mutex el mutex del diccionario de conexiones.
    * @return el resultado de la operación.
    */
   Resultado procesa(const std::string& mensaje, Conexion& conexion,
-		    std::unordered_map<std::string, Conexion>& conexiones);
+		    std::unordered_map<std::string, Conexion>& conexiones,
+		    std::mutex& mtx);
 
   /**
    * @brief Regresa el resultado del mensaje.
@@ -37,7 +40,8 @@ namespace Controlador {
    */
   Resultado resultado(MensajeCliente tipo, const nlohmann::json& mensaje,
 		      Conexion& conexion,
-		      std::unordered_map<std::string, Conexion>& conexiones);
+		      std::unordered_map<std::string, Conexion>& conexiones,
+		      std::mutex& mtx);
 
   /**
    * @brief Identifica al usuario del mensaje.
@@ -47,7 +51,8 @@ namespace Controlador {
    * @return el resultado de la operación.
    */
   Resultado identificaUsuario(const nlohmann::json& mensaje, Conexion& conexion,
-			      std::unordered_map<std::string, Conexion>& conexiones);
+			      std::unordered_map<std::string, Conexion>& conexiones,
+			      std::mutex& mtx);
 
   /**
    * @brief Cambia el estado de una conexion.
@@ -64,7 +69,8 @@ namespace Controlador {
    * @return el resultado de la operación.
    */
   Resultado listaUsuarios(Conexion conexion,
-			  std::unordered_map<std::string, Conexion>& conexiones);
+			  std::unordered_map<std::string, Conexion>& conexiones,
+			  std::mutex& mtx);
 
   /**
    * @brief Envia un texto privado a otro usuario.
@@ -74,7 +80,8 @@ namespace Controlador {
    * @return el resultado de la operación.
    */
   Resultado textoPrivado(const nlohmann::json& mensaje, Conexion conexion,
-			 std::unordered_map<std::string, Conexion>& conexiones);
+			 std::unordered_map<std::string, Conexion>& conexiones,
+			 std::mutex& mtx);
 
   /**
    * @brief Envia un texto público a todos los usuarios.
@@ -103,7 +110,8 @@ namespace Controlador {
    * @return el resultado de la operación.
    */
   Resultado desconectar(Conexion& conexion,
-			std::unordered_map<std::string, Conexion>& conexiones);
+			std::unordered_map<std::string, Conexion>& conexiones,
+			std::mutex& mtx);
 
   /**
    * @brief Regresa el resultado de una operación inválida.

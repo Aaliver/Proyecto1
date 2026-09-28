@@ -4,13 +4,13 @@ using diccionario = std::unordered_map<std::string, Conexion>;
 using json = nlohmann::json;
 
 Resultado Controlador::procesa(const std::string& mensaje, Conexion& conexion,
-			       diccionario& conexiones) {
+			       diccionario& conexiones, std::mutex& mtx) {
   try {
     json datos = Mensaje::obtener(mensaje);
     MensajeCliente tipo = Mensaje::getMsjCliente(datos.at("type"));
     if (conexion.getUsuario().empty() && tipo != MensajeCliente::IDENTIFY)
       return invalido(conexion, "NOT_IDENTIFIED");
-    return resultado(tipo, datos, conexion, conexiones);
+    return resultado(tipo, datos, conexion, conexiones, mtx);
   } catch (const json::parse_error& e) {
     return invalido(conexion, "INVALID");
   } catch (const json::out_of_range& e) {
@@ -19,16 +19,17 @@ Resultado Controlador::procesa(const std::string& mensaje, Conexion& conexion,
 }
 
 Resultado Controlador::resultado(MensajeCliente tipo, const json& mensaje,
-				 Conexion& conexion, diccionario& conexiones) {
+				 Conexion& conexion, diccionario& conexiones,
+				 std::mutex& mtx) {
   switch (tipo) {
   case MensajeCliente::IDENTIFY:
-    return identificaUsuario(mensaje, conexion, conexiones);
+    return identificaUsuario(mensaje, conexion, conexiones, mtx);
   case MensajeCliente::STATUS:
     return cambiaEstado(mensaje, conexion);
   case MensajeCliente::USERS:
-    return listaUsuarios(conexion, conexiones);
+    return listaUsuarios(conexion, conexiones, mtx);
   case MensajeCliente::TEXT:
-    return textoPrivado(mensaje, conexion, conexiones);
+    return textoPrivado(mensaje, conexion, conexiones, mtx);
   case MensajeCliente::PUBLIC_TEXT:
     return textoPublico(mensaje, conexion);
   case MensajeCliente::NEW_ROOM:
@@ -44,12 +45,13 @@ Resultado Controlador::resultado(MensajeCliente tipo, const json& mensaje,
   case MensajeCliente::LEAVE_ROOM:
     return abandonarSala();
   case MensajeCliente::DISCONNECT:
-    return desconectar(conexion, conexiones);
+    return desconectar(conexion, conexiones, mtx);
   }
 }
 
 Resultado Controlador::identificaUsuario(const json& mensaje, Conexion& conexion,
-					 diccionario& conexiones) {
+					 diccionario& conexiones, std::mutex& mtx) {
+  std::lock_guard<std::mutex> lock(mtx);
   std::string username = mensaje.at("username");
   if (username.length() > 8)
     return invalido(conexion, "INVALID");
@@ -82,10 +84,14 @@ Resultado Controlador::cambiaEstado(const json& mensaje, Conexion& conexion) {
   return {std::nullopt, notificacion, exito, exito};
 }
 
-Resultado Controlador::listaUsuarios(Conexion conexion, diccionario& conexiones) {
+Resultado Controlador::listaUsuarios(Conexion conexion, diccionario& conexiones,
+				     std::mutex& mtx) {
   json usuarios;
-  for (const auto& [nombre, con] : conexiones)
-    usuarios[nombre] = Estado::getString(con.getEstado());
+  {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (const auto& [nombre, con] : conexiones)
+      usuarios[nombre] = Estado::getString(con.getEstado());
+  }
   bool exito = !usuarios.empty();
   std::string respuesta = Mensaje::crea({
       {"type", Mensaje::getString(MensajeServidor::USER_LIST)},
@@ -95,7 +101,8 @@ Resultado Controlador::listaUsuarios(Conexion conexion, diccionario& conexiones)
 }
 
 Resultado Controlador::textoPrivado(const json& mensaje, Conexion conexion,
-				    diccionario& conexiones) {
+				    diccionario& conexiones, std::mutex& mtx) {
+  std::lock_guard<std::mutex> lock(mtx);
   std::string usuario = mensaje.at("username");
   auto it = conexiones.find(usuario);
   bool existe = it != conexiones.end();
@@ -148,9 +155,13 @@ Resultado Controlador::abandonarSala() {
   return {};
 }
 
-Resultado Controlador::desconectar(Conexion& conexion, diccionario& conexiones) {
+Resultado Controlador::desconectar(Conexion& conexion, diccionario& conexiones,
+				   std::mutex& mtx) {
   std::string usuario = conexion.getUsuario();
-  conexiones.erase(usuario);
+  {
+    std::lock_guard<std::mutex> lock(mtx);
+    conexiones.erase(usuario);
+  }
   bool exito = conexion.desconecta() >= 0;
   std::string respuesta = Mensaje::crea({
       {"type", Mensaje::getString(MensajeServidor::DISCONNECTED)},

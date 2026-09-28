@@ -22,7 +22,7 @@ struct Resultado {
   /**
    * @brief El mensaje de respuesta para el resto de conexiones.
    */
-  std::string mensajeConexiones;
+  std::string msjConexiones;
 
   /**
    * @brief Indica el exito de realizar la operación.

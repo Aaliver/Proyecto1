@@ -5,7 +5,6 @@
 #include <cstdio>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <thread>
 #include <unistd.h>
 
 Servidor::Servidor(const Configuracion& config) :
@@ -55,7 +54,7 @@ void Servidor::leerSolicitud(Conexion conexion) {
   while (true) {
     ssize_t bytes = recv(conexion.getSocket(), buffer, sizeof(buffer), 0);
     if (bytes <= 0) {
-      notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
+      notificar(Controlador::desconectar(conexion, conexiones, mtx).msjConexiones);
       break;
     }
     acumulado.append(buffer, bytes);
@@ -74,19 +73,20 @@ void Servidor::leerSolicitud(Conexion conexion) {
 }
 
 void Servidor::obtenerRespuesta(const std::string& solicitud, Conexion& conexion) {
-  Resultado resultado = Controlador::procesa(solicitud, conexion, conexiones);
+  Resultado resultado = Controlador::procesa(solicitud, conexion, conexiones, mtx);
 
   if (resultado.mensaje.has_value()) {
     const auto& [respuesta, usuario] = resultado.mensaje.value();
     enviaMensaje(respuesta, usuario);
   }
   if (!resultado.exito)
-    notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
+    notificar(Controlador::desconectar(conexion, conexiones, mtx).msjConexiones);
   if (resultado.notificar)
-    notificar(resultado.mensajeConexiones);
+    notificar(resultado.msjConexiones);
 }
 
 void Servidor::notificar(const std::string& mensaje) {
+  std::lock_guard<std::mutex> lock(mtx);
   for (const auto& [nombre, conexion] : conexiones)
     enviaMensaje(mensaje, conexion);
 }
@@ -97,8 +97,11 @@ void Servidor::enviaMensaje(const std::string& mensaje, const Conexion& conexion
 }
 
 int Servidor::desconecta() {
-  for (auto& [nombre, conexion] : conexiones)
-    conexion.desconecta();
+  {
+    std::lock_guard<std::mutex> lock(mtx);
+    for (auto& [nombre, conexion] : conexiones)
+      conexion.desconecta();
+  }
   for (auto& hilo : hilos)
     if (hilo.joinable())
       hilo.join();

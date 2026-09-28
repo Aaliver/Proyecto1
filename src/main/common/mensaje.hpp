@@ -101,7 +101,7 @@ namespace Mensaje {
    */
   MensajeCliente getMsjCliente(const std::string& mensaje);
 
-    /**
+  /**
    * @brief Regresa un enum del tipo de mensaje del servidor.
    * @param mensaje el mensaje.
    * @return un enum del tipo de mensaje.
