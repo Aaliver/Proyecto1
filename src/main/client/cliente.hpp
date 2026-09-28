@@ -1,5 +1,5 @@
 /**
- * @file cliente.cpp
+ * @file cliente.hpp
  * @brief Definición del cliente.
  */
 
@@ -24,12 +24,16 @@ private:
   /* El socket del cliente. */
   int clientSocket;
 
+  /* El límite de los mensajes. */
+  static constexpr std::size_t LIMITE = 1024 * 1024;
+
 public:
 
   /**
    * @brief El constructor.
    * @param usuario el usuario.
-   * @param puerto el puerto.
+   * @param puerto el puerto del servidor.
+   * @param ip la ip del servidor.
    */
   Cliente(Usuario usuario, int puerto, std::string ip);
 
@@ -39,22 +43,23 @@ public:
   int ejecuta();
 
   /**
-   * @brief Conecta el cliente al {@link Servidor}.
+   * @brief Recibe un mensaje del servidor.
    */
-  void conecta();
+  void recibirMensaje();
+
+  /**
+   * @brief Lee la entrada del usuario.
+   */
+  void leerEntrada();
+
+  /**
+   * @brief Hace una solicitud al servidor.
+   * @brief mensaje el mensaje con la solicitud.
+   */
+  void hacerSolicitud(const std::string& mensaje);
 
   /**
    * @brief Desconecta el cliente.
    */
   int desconecta();
-
-  /**
-   * @brief Hace una solicitud al servidor.
-   */
-  void hacerSolicitud(const std::string& mensaje);
-
-  /**
-   * @brief Recibe un mensaje del servidor.
-   */
-  void recibeMensaje();
 };

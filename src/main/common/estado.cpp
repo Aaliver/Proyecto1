@@ -5,6 +5,8 @@ std::string_view Estado::getString(EstadoConexion estado) {
     case EstadoConexion::ACTIVE: return "ACTIVE";
     case EstadoConexion::AWAY:   return "AWAY";
     case EstadoConexion::BUSY:   return "BUSY";
+    default:
+      throw std::runtime_error("Estado invalido.");
     }
 }
 

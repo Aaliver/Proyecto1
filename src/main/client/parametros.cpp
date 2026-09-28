@@ -16,21 +16,26 @@ Parametros Argumentos::valida(int argc, char* argv[]) {
   if (argc != 7)
     throw std::runtime_error("Cantidad incorrecta de argumentos.");
   Parametros param;
-  for (int i = 1; i < argc; i++)
-    if (std::string(argv[i]) == "-p") {
+  for (int i = 1; i < argc; i++) {
+    std::string bandera = std::string(argv[i]);
+    if (bandera == "-p") {
       if (argc <= ++i)
 	throw std::runtime_error("Puerto no definido.");
       param.puerto = validaPuerto(argv[i]);
-    } else if ("-i") {
+    } else if (bandera == "-i") {
       if (argc <= ++i)
 	throw std::runtime_error("Dirección ip no definida.");
       param.ip = argv[i];
-    } else if ("-u") {
+    } else if (bandera == "-u") {
       if (argc <= ++i)
 	throw std::runtime_error("Nombre de usuario no definido.");
-      param.nombre = argv[i];
+      std::string nombre = argv[i];
+      if (nombre.length() > 8)
+	throw std::runtime_error("La longitud máxima del nombre de usuario es 8.");
+      param.nombre = nombre;
     } else {
       throw std::runtime_error("Argumentos inválidos.");
     }
+  }
   return param;
 }

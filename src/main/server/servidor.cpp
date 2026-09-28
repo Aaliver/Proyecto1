@@ -1,9 +1,11 @@
 #include "servidor.hpp"
 #include "controlador.hpp"
+#include "resultado.hpp"
 #include "vista.hpp"
 #include <cstdio>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <thread>
 #include <unistd.h>
 
 Servidor::Servidor(const Configuracion& config) :
@@ -24,54 +26,56 @@ int Servidor::ejecuta() {
     throw std::runtime_error("Error al vincular el socket al puerto.");
   }
 
-  Vista::muestraMensaje("Servidor conectado!");
+  Vista::muestraMensaje("Servidor conectado!\n");
 
   if (listen(serverSocket, 5) == -1) {
     close(serverSocket);
     throw std::runtime_error("Error al escuchar conexiones entrantes.");
   }
 
-  Vista::muestraMensaje("Esperando conexiones entrantes...");
-
-  int clientSocket = accept(serverSocket, nullptr, nullptr);
-  if (clientSocket == -1) {
-    close(serverSocket);
-    throw std::runtime_error("Error al aceptar la conexión entrante.");
-  }
-  Conexion conexion(conexiones.size() + 1, clientSocket);
-
-  Vista::muestraMensaje("Conexión establecida con el cliente.");
+  Vista::muestraMensaje("Esperando conexiones entrantes...\n");
 
   while (true) {
-      leerSolicitud(conexion);
+    int clientSocket = accept(serverSocket, nullptr, nullptr);
+    if (clientSocket == -1)
+      continue;
+    Conexion conexion(conexiones.size() + 1, clientSocket);
+    hilos.emplace_back(&Servidor::leerSolicitud, this, conexion);
   }
 
   return desconecta();
 }
 
-int Servidor::desconecta() {
-  for (auto& [nombre, conexion] : conexiones)
-    notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
-  return close(serverSocket);
-}
-
-void Servidor::leerSolicitud(Conexion& conexion) {
+void Servidor::leerSolicitud(Conexion conexion) {
+  Vista::muestraMensaje("Conexión establecida con el cliente.\n");
   constexpr std::size_t LIMITE = 1024 * 1024;
-  char buffer[LIMITE] = {0};
-  ssize_t bytes = recv(conexion.getSocket(), buffer, sizeof(buffer), 0);
-  if (bytes <= 0) {
-    notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
-    return;
+  char buffer[1024];
+  std::string acumulado;
+
+  while (true) {
+    ssize_t bytes = recv(conexion.getSocket(), buffer, sizeof(buffer), 0);
+    if (bytes <= 0) {
+      notificar(Controlador::desconectar(conexion, conexiones).mensajeConexiones);
+      break;
+    }
+    acumulado.append(buffer, bytes);
+    std::size_t posicion;
+    while ((posicion = acumulado.find('\n')) != std::string::npos) {
+      std::string mensaje = acumulado.substr(0, posicion);
+      acumulado.erase(0, posicion + 1);
+      Vista::muestraMensaje(">> [%d]: %s", conexion.getNumero(), mensaje.c_str());
+      obtenerRespuesta(mensaje, conexion);
+    }
+    if (acumulado.size() >= LIMITE) {
+      conexion.desconecta();
+      break;
+    }
   }
-
- const std::string mensaje(buffer, bytes);
- Vista::muestraMensaje(">> [%d]: %s", conexion.getNumero(), mensaje.c_str());
-
- Resultado resultado = Controlador::procesa(mensaje, conexion, conexiones);
- obtenerRespuesta(resultado, conexion);
 }
 
-void Servidor::obtenerRespuesta(const Resultado& resultado, Conexion conexion) {
+void Servidor::obtenerRespuesta(const std::string& solicitud, Conexion& conexion) {
+  Resultado resultado = Controlador::procesa(solicitud, conexion, conexiones);
+
   if (resultado.mensaje.has_value()) {
     const auto& [respuesta, usuario] = resultado.mensaje.value();
     enviaMensaje(respuesta, usuario);
@@ -87,6 +91,16 @@ void Servidor::notificar(const std::string& mensaje) {
     enviaMensaje(mensaje, conexion);
 }
 
-void Servidor::enviaMensaje(const std::string& mensaje, Conexion conexion) {
-    send(conexion.getSocket(), mensaje.c_str(), mensaje.length(), 0);
+void Servidor::enviaMensaje(const std::string& mensaje, const Conexion& conexion) {
+  Vista::muestraMensaje("<< %s", mensaje.c_str());
+  send(conexion.getSocket(), mensaje.c_str(), mensaje.length(), 0);
+}
+
+int Servidor::desconecta() {
+  for (auto& [nombre, conexion] : conexiones)
+    conexion.desconecta();
+  for (auto& hilo : hilos)
+    if (hilo.joinable())
+      hilo.join();
+  return close(serverSocket);
 }

@@ -62,7 +62,7 @@ std::string_view Mensaje::getString(MensajeServidor mensaje) {
 }
 
 MensajeServidor Mensaje::getMsjServidor(const std::string& mensaje) {
-  if ("RESPONSE")
+  if (mensaje == "RESPONSE")
     return MensajeServidor::RESPONSE;
   else if (mensaje == "NEW_USER")
     return MensajeServidor::NEW_USER;

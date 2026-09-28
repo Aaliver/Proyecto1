@@ -51,14 +51,11 @@ Resultado Controlador::resultado(MensajeCliente tipo, const json& mensaje,
 Resultado Controlador::identificaUsuario(const json& mensaje, Conexion& conexion,
 					 diccionario& conexiones) {
   std::string username = mensaje.at("username");
-  bool valido = username.length() <= 8;
-  if (valido) {
-    auto [it, agregado] = conexiones.insert({username, conexion});
-    if (agregado)
-      conexion.setUsuario(username);
-    valido = agregado;
-  }
-  std::string resultado = (valido) ? "SUCCESS" : "USER_ALREADY_EXISTS";
+  if (username.length() > 8)
+    return invalido(conexion, "INVALID");
+  conexion.setUsuario(username);
+  auto [it, agregado] = conexiones.insert({username, conexion});
+  std::string resultado = (agregado) ? "SUCCESS" : "USER_ALREADY_EXISTS";
   std::string respuesta = Mensaje::crea({
       {"type", Mensaje::getString(MensajeServidor::RESPONSE)},
       {"operation", Mensaje::getString(MensajeCliente::IDENTIFY)},
@@ -69,7 +66,7 @@ Resultado Controlador::identificaUsuario(const json& mensaje, Conexion& conexion
       {"type", Mensaje::getString(MensajeServidor::NEW_USER)},
       {"username", username}
     });
-  return {std::make_tuple(respuesta, conexion), notificacion, valido, valido};
+  return {std::make_tuple(respuesta, conexion), notificacion, agregado, agregado};
 }
 
 Resultado Controlador::cambiaEstado(const json& mensaje, Conexion& conexion) {
@@ -79,7 +76,7 @@ Resultado Controlador::cambiaEstado(const json& mensaje, Conexion& conexion) {
     conexion.setEstado(estado);
   std::string notificacion = Mensaje::crea({
       {"type", Mensaje::getString(MensajeServidor::NEW_STATUS)},
-      {"username", mensaje.at("username")},
+      {"username", conexion.getUsuario()},
       {"status", Estado::getString(estado)}
     });
   return {std::nullopt, notificacion, exito, exito};
@@ -87,9 +84,9 @@ Resultado Controlador::cambiaEstado(const json& mensaje, Conexion& conexion) {
 
 Resultado Controlador::listaUsuarios(Conexion conexion, diccionario& conexiones) {
   json usuarios;
-  for (const auto& [nombre, conexion] : conexiones)
-    usuarios[nombre] = Estado::getString(conexion.getEstado());
-  bool exito = true;
+  for (const auto& [nombre, con] : conexiones)
+    usuarios[nombre] = Estado::getString(con.getEstado());
+  bool exito = !usuarios.empty();
   std::string respuesta = Mensaje::crea({
       {"type", Mensaje::getString(MensajeServidor::USER_LIST)},
       {"users", usuarios}

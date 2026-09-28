@@ -1,4 +1,5 @@
 /**
+ * @file vista.hpp
  * Definción de la vista del {@link Cliente} y {@link Servidor}.
  */
 

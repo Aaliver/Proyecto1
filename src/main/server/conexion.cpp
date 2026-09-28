@@ -1,7 +1,8 @@
 #include "conexion.hpp"
 #include <unistd.h>
 
-Conexion::Conexion(int numero, int socket) : numero(numero), socket(socket) {}
+Conexion::Conexion(int numero, int socket) :
+  numero(numero), socket(socket), estado(EstadoConexion::ACTIVE) {}
 
 void Conexion::setUsuario(std::string usuario) {
   this->usuario = usuario;

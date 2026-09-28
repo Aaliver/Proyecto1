@@ -30,8 +30,10 @@ std::string Controlador::procesaSolicitud(const std::string& datos, Usuario& usu
     return textoSala(stream);
   else if (comando == "/leaveRoom")
     return abandonarSala(stream);
-  else
+  else if (comando == "/disconnect")
     return desconectar(usuario);
+  Vista::muestraError("Comando inválido.");
+  return "";
 }
 
 std::string Controlador::getDato(std::stringstream& stream) {
@@ -55,13 +57,18 @@ std::string Controlador::identifica(Usuario& usuario) {
 }
 
 std::string Controlador::estado(Usuario& usuario, std::stringstream& stream) {
-  std::string estado = getDato(stream);
-  EstadoConexion nuevoEstado = Estado::getEstado(estado);
-  usuario.setEstado(nuevoEstado);
-  return Mensaje::crea({
-      {"type", Mensaje::getString(MensajeCliente::STATUS)},
-      {"status", Estado::getString(nuevoEstado)}
-    });
+  try {
+    std::string estado = getDato(stream);
+    EstadoConexion nuevoEstado = Estado::getEstado(estado);
+    usuario.setEstado(nuevoEstado);
+    return Mensaje::crea({
+	{"type", Mensaje::getString(MensajeCliente::STATUS)},
+	{"status", Estado::getString(nuevoEstado)}
+      });
+  } catch (const std::runtime_error& re) {
+    Vista::muestraError(re.what());
+    return "";
+  }
 }
 
 std::string Controlador::listaUsuarios() {
@@ -86,9 +93,14 @@ std::string Controlador::textoPublico(std::stringstream& stream) {
 }
 
 std::string Controlador::nuevaSala(std::stringstream& stream) {
+  std::string nombre = getDato(stream);
+  if (nombre.length() > 16) {
+    Vista::muestraError("La longitud máxima del nombre de una sala es 16.");
+    return "";
+  }
   return Mensaje::crea({
       {"type", Mensaje::getString(MensajeCliente::NEW_ROOM)},
-      {"roomname", getDato(stream)}
+      {"roomname", nombre}
     });
 }
 
@@ -186,62 +198,62 @@ void Controlador::respuestaServidor(MensajeServidor tipo, const json& datos) {
 
 void Controlador::muestraRespuesta(const json& datos) {
   std::string resultado = (datos.at("result") == "SUCCESS") ? "exitosa" : "fallida";
-  Vista::muestraMensaje("Operación %s.", resultado.c_str());
+  Vista::muestraMensaje("Operación %s.\n", resultado.c_str());
 }
 
 void Controlador::muestraNuevoUsuario(const json& datos) {
-  Vista::muestraMensaje("%s se conecto al chat.",
+  Vista::muestraMensaje("%s se conecto al chat.\n",
 			datos.at("username").get<std::string>().c_str());
 }
 
 void Controlador::muestraNuevoEstado(const json& datos) {
-  Vista::muestraMensaje("%s cambio su estado a %s",
+  Vista::muestraMensaje("%s cambio su estado a %s.\n",
 			datos.at("username").get<std::string>().c_str(),
 			datos.at("status").get<std::string>().c_str());
 }
 
 void Controlador::muestraListaUsuarios(const json& datos) {
-  Vista::muestraMensaje(datos.at("users").get<std::string>().c_str());
+  Vista::muestraMensaje("%s\n", datos.at("users").dump().c_str());
 }
 
 void Controlador::muestraTextoPrivado(const json& datos) {
-  Vista::muestraMensaje("[Priv] %s: %s",
+  Vista::muestraMensaje("[Priv] %s: %s\n",
 			datos.at("username").get<std::string>().c_str(),
 			datos.at("text").get<std::string>().c_str());
 }
 
 void Controlador::muestraTextoPublico(const json& datos) {
-  Vista::muestraMensaje("[General] %s: %s",
+  Vista::muestraMensaje("[General] %s: %s\n",
 			datos.at("username").get<std::string>().c_str(),
 			datos.at("text").get<std::string>().c_str());
 }
 
 void Controlador::muestraInvitacion(const json& datos) {
-  Vista::muestraMensaje("%s te invito a la sala %s.",
+  Vista::muestraMensaje("%s te invito a la sala %s.\n",
 			datos.at("username").get<std::string>().c_str(),
 			datos.at("roomname").get<std::string>().c_str());
 }
 
 void Controlador::muestraUnirseSala(const json& datos) {
-  Vista::muestraMensaje("%s se unio a la sala %s.",
+  Vista::muestraMensaje("%s se unio a la sala %s.\n",
 			datos.at("username").get<std::string>().c_str(),
 			datos.at("roomname").get<std::string>().c_str());
 }
 
 void Controlador::muestraTextoSala(const json& datos) {
-  Vista::muestraMensaje("[%s] %s: %s",
+  Vista::muestraMensaje("[%s] %s: %s\n",
 			datos.at("roomname").get<std::string>().c_str(),
 			datos.at("username").get<std::string>().c_str(),
 			datos.at("text").get<std::string>().c_str());
 }
 
 void Controlador::muestraAbandonarSala(const json& datos) {
-  Vista::muestraMensaje("%s ha abandonado la sala %s.",
+  Vista::muestraMensaje("%s ha abandonado la sala %s.\n",
 			datos.at("username").get<std::string>().c_str(),
 			datos.at("roomname").get<std::string>().c_str());
 }
 
 void Controlador::muestraDesconectar(const json& datos) {
-  Vista::muestraMensaje("%s se ha desconectado.",
+  Vista::muestraMensaje("%s se ha desconectado.\n",
 			datos.at("username").get<std::string>().c_str());
 }

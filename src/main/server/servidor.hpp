@@ -6,7 +6,6 @@
 #pragma once
 #include "conexion.hpp"
 #include "configuracion.hpp"
-#include "resultado.hpp"
 #include <string>
 #include <unordered_map>
 
@@ -24,6 +23,8 @@ private:
   int serverSocket;
   /* Las conexiones del servidor. */
   std::unordered_map<std::string,Conexion> conexiones;
+  /* Los hilos del servidor. */
+  std::vector<std::thread> hilos;
 
 public:
 
@@ -39,22 +40,17 @@ public:
   int ejecuta();
 
   /**
-   * @brief Desconecta el servidor.
-   */
-  int desconecta();
-
-  /**
-   * @brief Lee solicitudes del {@link Cliente}.
+   * @brief Lee solicitudes de la {@link Conexion}.
    * @param conexion la conexión de la que lee.
    */
-  void leerSolicitud(Conexion& conexion);
+  void leerSolicitud(Conexion conexion);
 
   /**
-   * @brief Obtiene la respuesta de las solicitudes del {@link Cliente}.
-   * @param resultado el resultado de la solicitud.
+   * @brief Obtiene la respuesta de las solicitudes de la {@link Conexion}.
+   * @param solicitud la solicitud de la que obtiene la respuesta.
    * @param conexion la conexion de la que procesa la solicitud.
    */
-  void obtenerRespuesta(const Resultado& resultado, Conexion conexion);
+  void obtenerRespuesta(const std::string& solicitud, Conexion& conexion);
 
   /**
    * @brief Notifica un mensaje a todos los clientes.
@@ -67,5 +63,10 @@ public:
    * @param mensaje el mensaje que envia.
    * @param conexion la conexion a la que envia el mensaje.
    */
-  void enviaMensaje(const std::string& mensaje, Conexion conexion);
+  void enviaMensaje(const std::string& mensaje, const Conexion& conexion);
+
+  /**
+   * @brief Desconecta el servidor.
+   */
+  int desconecta();
 };
