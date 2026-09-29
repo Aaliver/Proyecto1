@@ -54,7 +54,9 @@ void Servidor::leerSolicitud(Conexion conexion) {
   while (true) {
     ssize_t bytes = recv(conexion.getSocket(), buffer, sizeof(buffer), 0);
     if (bytes <= 0) {
-      notificar(Controlador::desconectar(conexion, conexiones, mtx).msjConexiones);
+      Resultado resultado = Controlador::desconectar(conexion, conexiones, mtx);
+      if (!conexion.getUsuario().empty())
+        notificar(resultado.msjConexiones);
       break;
     }
     acumulado.append(buffer, bytes);
@@ -80,7 +82,7 @@ void Servidor::obtenerRespuesta(const std::string& solicitud, Conexion& conexion
     enviaMensaje(respuesta, usuario);
   }
   if (!resultado.exito)
-    notificar(Controlador::desconectar(conexion, conexiones, mtx).msjConexiones);
+    conexion.desconecta();
   if (resultado.notificar)
     notificar(resultado.msjConexiones);
 }

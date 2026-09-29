@@ -55,8 +55,9 @@ Resultado Controlador::identificaUsuario(const json& mensaje, Conexion& conexion
   std::string username = mensaje.at("username");
   if (username.length() > 8)
     return invalido(conexion, "INVALID");
-  conexion.setUsuario(username);
-  auto [it, agregado] = conexiones.insert({username, conexion});
+  Conexion nueva = conexion;
+  nueva.setUsuario(username);
+  auto [it, agregado] = conexiones.insert({username, nueva});
   std::string resultado = (agregado) ? "SUCCESS" : "USER_ALREADY_EXISTS";
   std::string respuesta = Mensaje::crea({
       {"type", Mensaje::getString(MensajeServidor::RESPONSE)},
@@ -68,6 +69,8 @@ Resultado Controlador::identificaUsuario(const json& mensaje, Conexion& conexion
       {"type", Mensaje::getString(MensajeServidor::NEW_USER)},
       {"username", username}
     });
+  if (agregado)
+    conexion.setUsuario(username);
   return {std::make_tuple(respuesta, conexion), notificacion, agregado, agregado};
 }
 

@@ -8,9 +8,7 @@ using json = nlohmann::json;
 std::string Controlador::procesaSolicitud(const std::string& datos, Usuario& usuario) {
   std::stringstream stream(datos);
   std::string comando = getDato(stream);
-  if (comando == "/identify")
-    return identifica(usuario);
-  else if (comando == "/status")
+  if (comando == "/status")
     return estado(usuario, stream);
   else if (comando == "/users")
     return listaUsuarios();
@@ -105,13 +103,14 @@ std::string Controlador::nuevaSala(std::stringstream& stream) {
 }
 
 std::string Controlador::invitarSala(std::stringstream& stream) {
+  std::string sala = getDato(stream);
   json usuarios = json::array();
   std::string nombre;
   while (stream >> nombre)
     usuarios.push_back(nombre);
   return Mensaje::crea({
       {"type", Mensaje::getString(MensajeCliente::INVITE)},
-      {"roomname", getDato(stream)},
+      {"roomname", sala},
       {"usernames", usuarios}
     });
 }
