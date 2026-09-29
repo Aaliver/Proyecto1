@@ -27,6 +27,7 @@
 \usepackage{lmodern}          % Para la familia de fuentes
 \usepackage[T1]{fontenc}      % Para codificación de fuente
 \usepackage{tabularx}         % Para el ancho de tablas
+\usepackage{hyperref}         % Para los enlaces
 
 % CONFIGURACIONES Y COLORES
 \definecolor{maincolor}{RGB}{0, 51, 102}
@@ -136,7 +137,7 @@
 \begin{abstract}
 Este proyecto implementa un chat multiusuario en C++ usando el patrón de diseño
 modelo vista controlador y apoyándose de herramientas como Meson para la
-construcción, Doxygen para la documentación, además de una biblioteca json para la
+construcción, Doxygen para la documentación, además de una biblioteca JSON para la
 creación de mensajes.
 \end{abstract}
 
@@ -240,11 +241,18 @@ servidor. Ambas se encargan de la comunicación mediante sockets apoyandose de
 diversas clases, enumeraciones, estructuras y espacios de nombres que se
 encargan de leer y construir los mensajes que se envían.
 
+La primera versión del chat se basó en este
+\href{https://github.com/HolyLu/tcp-server-}{\color{maincolor}\textbf{repositorio}}.
+Inicialmente se busco tener un cliente y un servidor simples capaces de comunicarse
+entre si, posteriormente se extendio para separar las responsabilidades e
+implementar el patrón MVC. Solo una vez que la comunicación básica fue posible se
+agrego la concurrencia para permitir múltiples conexiones.
+
 Antes de iniciar el cliente, el programa recibe 3 banderas: \texttt{`-u`} para
-el mombre de usuario, \texttt{`-p`} para el puerto y \texttt{`-i`} para la ip.
-Validamos todos los argumentos los utilizando el namespace
-\texttt{Argumentos}. Si todos son válidos entonces los guardamos en la
-estructura \texttt{Parametros} que se usara para inicializar el cliente.
+el nombre de usuario, \texttt{`-p`} para el puerto y \texttt{`-i`} para la ip.
+Para prescindir de una clase válidamos todos los argumentos utilizando el
+namespace \texttt{Argumentos}. Si todos son válidos entonces se guardan en la
+estructura \texttt{Parametros} que se usa para inicializar el cliente.
 
 El \texttt{Cliente} se encarga de realizar la comunicación entre el usuario y el
 servidor. Para ello utiliza el namespace \texttt{Controlador} que cuenta con
@@ -287,8 +295,9 @@ cliente. Para ello utiliza la función principal del namespace
 \texttt{Controlador} (diferente al controlador del cliente) que se encarga de
 procesar los mensajes de los clientes y regresar la estructura
 \texttt{Resultado} que contiene el mensaje de respuesta junto a sus
-destinatarios. De igual manera, la \texttt{Vista} se encarga de imprimir las
-solicitudes y los mensajes de respuesta.
+destinatarios, lo que facilita el envio de respuestas a los clientes a
+comparación de si solo regresara el mensaje. De igual manera, la \texttt{Vista}
+se encarga de imprimir las solicitudes y los mensajes de respuesta.
 
 Como propiedades tiene una estructura \texttt{Configuracion} que como su nombre
 indica, guarda la configuración del servidor establecida al iniciar el programa,
@@ -330,8 +339,8 @@ vector con los invitados.
 
 \crc{Sala}{
   \item Define los datos de la sala.
-  \item Regresa a los invitados y/o intengrantes de la sala.
-  \item Modifica a los invitados y/o intengrantes de la sala.
+  \item Regresa a los invitados y/o integrantes de la sala.
+  \item Modifica a los invitados y/o integrantes de la sala.
 }{
   \item Conexion
 }
@@ -341,11 +350,47 @@ lectura y procesamiento de los mensajes. Las enumeraciones
 \texttt{MensajeCliente} y \texttt{MensajeServidor} estan para definir los tipos
 de mensajes que se pueden enviar entre si el cliente y el servidor. Ambas se
 apoyan del namespace \texttt{Mensaje} para hacer la conversión entre enum,
-string y json.
+string y JSON.
+
+\section*{Implementación}
+\addcontentsline{toc}{section}{Implementación}
+
+Para la implementación de este proyecto se usó Meson (con Ninja) como sistema de
+construcción y se crearon varios archivos \texttt{meson.build}, uno en cada
+directorio principal para gestionar los ejecutables, los archivos y las
+dependencias. Entre estas últimas se encuentra la biblioteca \texttt{nlohmann}
+de C++ para manipular datos JSON. Igualmente se necesitó de Doxygen para la
+generación de documentación. Esta herramienta no es necesaria para la ejecución
+del programa, pero si sugerida.
+
+Para correr el programa tenemos dos ejecutables, uno para el cliente y otro para
+el servidor:
+
+\vspace{0.7em}
+\centerline{\texttt{./build/src/main/server/servidor 1234}}
+\vspace{0.7em}
+
+Donde el servidor recibe el número del puerto.
+
+\vspace{0.7em}
+\centerline{\texttt{./build/src/main/client/cliente -p 1234 -u alice -i 127.0.0.1}}
+\vspace{0.7em}
+
+Y el cliente recibe el puerto \texttt{`-p`}, el usuario \texttt{`-u`} y la ip
+\texttt{`-i`}.
 
 \section*{Conclusión}
 \addcontentsline{toc}{section}{Conclusión}
 
+Durante el desarrollo de este proyecto se implementó un sistema de chat
+multiusuario compuesto por un cliente y un servidor, utilizando sockets para la
+comunicación y programación concurrente para las múltiples conexiones. Se hizo
+uso del patrón MVC para separar la comunicación, el procesamiento de solicitudes
+y la visualización de los mensajes. Asimismo, se utilizaron estructuras y
+enumeraciones para representar el estado del sistema y los diferentes tipos de
+mensajes tanto del cliente como del servidor. Finalmente, el proyecto permitió
+aplicar conceptos de programación orientada a objetos, comunicación mediante
+sockets, concurrencia y diseño de software.
 
 % FIN DEL DOCUMENTO
 \end{document}
