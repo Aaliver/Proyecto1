@@ -23,7 +23,7 @@ namespace Controlador {
    * @param mensaje el mensaje a procesar.
    * @param conexion la conexion que envio el mensaje.
    * @param conexiones el diccionario con las conexiones del servidor.
-   * @param mutex el mutex del diccionario de conexiones.
+   * @param mtx el mutex del diccionario de conexiones.
    * @return el resultado de la operación.
    */
   Resultado procesa(const std::string& mensaje, Conexion& conexion,
@@ -36,6 +36,7 @@ namespace Controlador {
    * @param mensaje el mensaje a responder.
    * @param conexion la conexion que envio el mensaje.
    * @param conexiones el diccionario con las conexiones del servidor.
+   * @param mtx el mutex del diccionario de conexiones.
    * @return el resultado de la operación.
    */
   Resultado resultado(MensajeCliente tipo, const nlohmann::json& mensaje,
@@ -48,6 +49,7 @@ namespace Controlador {
    * @param mensaje el mensaje de identificación del usuario.
    * @param conexion la conexion que envio el mensaje.
    * @param conexiones el diccionario con las conexiones del servidor.
+   * @param mtx el mutex del diccionario de conexiones.
    * @return el resultado de la operación.
    */
   Resultado identificaUsuario(const nlohmann::json& mensaje, Conexion& conexion,
@@ -66,6 +68,7 @@ namespace Controlador {
    * @brief Regresa la lista de usuarios.
    * @param conexion la conexion que envio el mensaje.
    * @param conexiones el diccionario con las conexiones del servidor.
+   * @param mtx el mutex del diccionario de conexiones.
    * @return el resultado de la operación.
    */
   Resultado listaUsuarios(Conexion conexion,
@@ -77,6 +80,7 @@ namespace Controlador {
    * @param mensaje el mensaje a enviar.
    * @param conexion la conexion que envio el mensaje.
    * @param conexiones el diccionario con las conexiones del servidor.
+   * @param mtx el mutex del diccionario de conexiones.
    * @return el resultado de la operación.
    */
   Resultado textoPrivado(const nlohmann::json& mensaje, Conexion conexion,
@@ -107,6 +111,7 @@ namespace Controlador {
    * @brief Desconecta a una conexion.
    * @param conexion la conexion que envio el mensaje.
    * @param conexiones el diccionario con las conexiones del servidor.
+   * @param mtx el mutex del diccionario de conexiones.
    * @return el resultado de la operación.
    */
   Resultado desconectar(Conexion& conexion,

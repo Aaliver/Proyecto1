@@ -6,6 +6,7 @@
 #pragma once
 #include "conexion.hpp"
 #include "configuracion.hpp"
+#include "sala.hpp"
 #include <mutex>
 #include <string>
 #include <thread>
@@ -30,6 +31,8 @@ private:
   std::vector<std::thread> hilos;
   /* El mutex del diccionario de conexiones. */
   mutable std::mutex mtx;
+  /* Las salas de servidor. */
+  std::unordered_map<std::string,Sala> salas;
 
 public:
 

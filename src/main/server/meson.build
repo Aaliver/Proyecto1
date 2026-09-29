@@ -3,6 +3,7 @@ server_sources = files(
     'configuracion.cpp',
     'controlador.cpp',
     'conexion.cpp',
+    'sala.cpp',
 )
 
 lib_server = static_library(
