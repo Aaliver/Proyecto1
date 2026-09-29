@@ -26,6 +26,7 @@
 \usepackage[most]{tcolorbox}  % Para los cuadros de color
 \usepackage{lmodern}          % Para la familia de fuentes
 \usepackage[T1]{fontenc}      % Para codificación de fuente
+\usepackage{tabularx}         % Para el ancho de tablas
 
 % CONFIGURACIONES Y COLORES
 \definecolor{maincolor}{RGB}{0, 51, 102}
@@ -46,44 +47,34 @@
     \end{itemize}
 }
 
-\newcommand{\uml}[3]{
+\newcommand{\crc}[3]{
     \begin{center}
-        \begin{tcolorbox}[colback=maincolor!10, colframe=maincolor,
+        \begin{tcolorbox}[
+            colback=maincolor!10, colframe=maincolor,
             colupper=black, fontupper=\footnotesize\ttfamily,
             boxrule=0.2mm, arc=2pt,
-            left=3pt, right=3pt, top=1pt, bottom=1pt, width=2.5in,
-            title={\centering\fontseries{b}\selectfont\footnotesize #1},
+            left=3pt, right=3pt, top=1pt, bottom=1pt,
+            title={\fontseries{b}\selectfont\footnotesize Class
+                \begin{center}
+                    #1
+                \end{center}},
             colbacktitle=maincolor!35,
             coltitle=black,
-            toptitle=4pt, bottomtitle=4pt]
+            toptitle=4pt, bottomtitle=4pt
+            ]
 
-            \vspace{4pt}
-            \begin{itemize}[label={}, itemsep=-5pt]
-                #2
-            \end{itemize}
-            \vspace{6pt}
-
-            {\color{maincolor}\hrule height 0.2mm}
-
-            \vspace{-3pt}
-            \begin{itemize}[label={}, itemsep=-5pt]
-                #3
-            \end{itemize}
-            \vspace{-6pt}
+            \begin{tabularx}{\linewidth}{@{}X|X@{}}
+              \textbf{\footnotesize Responsabilidades}
+              & \textbf{\footnotesize Colaboradores} \\[4pt]
+              \begin{itemize}[itemsep=-5pt, leftmargin=*]
+                  #2
+              \end{itemize}
+              &  \begin{itemize}[itemsep=-5pt, leftmargin=*]
+                  #3
+              \end{itemize}
+            \end{tabularx}
         \end{tcolorbox}
     \end{center}
-}
-
-\newcommand{\public}[1]{
-  \item[$+$] #1
-}
-
-\newcommand{\private}[1]{
-  \item[$-$] #1
-}
-
-\newcommand{\noAccess}[1]{
-  \item[] #1
 }
 
 % ESTILO DE CÓDIGO
@@ -143,8 +134,10 @@
 \thispagestyle{empty}
 
 \begin{abstract}
-
-
+Este proyecto implementa un chat multiusuario en C++ usando el patrón de diseño
+modelo vista controlador y apoyándose de herramientas como Meson para la
+construcción, Doxygen para la documentación, además de una biblioteca json para la
+creación de mensajes.
 \end{abstract}
 
 \newpage
@@ -155,32 +148,32 @@
 \addcontentsline{toc}{section}{Introducción}
 
 Este Proyecto busca implementar el cliente y el servidor de un chat multiusuario
-funcional mediante la implementación de ciertos patrones de diseño que faciliten
-su desarrollo. A su vez, se espera seguir el enfoque de gestión de proyectos
-usando el modelo de la cascada, así como prácticas como las pruebas unitarias o
-el código limpio, que no solo facilitan el desarrollo de proyectos, sino que
-aseguran una mejor comprensión de cualquier proceso que lo implemente.
+funcional mediante la implementación de ciertos patrones de diseño (como el MVC)
+que faciliten su desarrollo. A su vez, se espera seguir el enfoque de gestión de
+proyectos usando el modelo de la cascada, así como prácticas como el código
+limpio, que no solo facilitan el desarrollo de proyectos, sino que aseguran una
+mejor comprensión de cualquier proceso que lo implemente.
 
 \section*{Problema}
 \addcontentsline{toc}{section}{Problema}
 
-Al ser un chat multiusuario, como su nombre lo indica, se espera que varias
-personas se conecten al servidor de manera simultánea sin generar problemas
-tanto para el cliente como para el servidor. En esencia, el servidor debe
-permanecer siempre activo, ningún error debe terminar el programa, y en caso de
-que alguno se detecte, el servidor debe ser capaz de manejarlo sin que afecte a
-ninguno de los usuarios.
+Al ser un chat multiusuario, como el nombre del proyecto nombre lo indica, se
+espera que varias personas se conecten al servidor de manera simultánea sin
+generar problemas tanto para el cliente como para el servidor. En esencia, el
+servidor debe permanecer siempre activo, ningún error debe terminar el programa,
+y en caso de que alguno se detecte, el servidor debe ser capaz de manejarlo sin
+que afecte a ninguno de los usuarios.
 
 Para llevar esto a cabo se necesita del uso de programación concurrente, esto
-para poder realizar diferentes tareas sin darle prioridad a ninguna en
-particular.
+para poder realizar diferentes tareas de manera simultánea, como seria responder
+las diferentes solicitudes de los clientes.
 
-También es necesaria una comunicación entre el cliente y el servidor. Los
-usuarios no pueden comunicarse directamente entre sí; en su lugar, necesitan
-enviar una solicitud al servidor para que este la procese y genere una
+También es necesaria una comunicación mediante sockets entre el cliente y el
+servidor. Los usuarios no pueden comunicarse directamente entre sí; en su lugar,
+necesitan enviar una solicitud al servidor para que este la procese y genere una
 respuesta. Este proceso se aplica a cualquier acción que el usuario desee
 realizar. Primero tiene que pasar por el servidor y, dependiendo de su validez,
-se realizará.
+se realizará o se desconectará al cliente.
 
 \section*{Análisis}
 \addcontentsline{toc}{section}{Análisis}
@@ -195,8 +188,8 @@ través de los mensajes que se envían.
         se envía un mensaje al resto de los clientes informando del nuevo
         usuario, en caso contrario responderá que el nombre de usuario ya está
         en uso.}
-    \newItem{Cambiar estado}{Cambiar el estado del usuario entre \texttt{active},
-        \texttt{away} y \texttt{busy}.}{Si el nuevo estado es diferente al
+    \newItem{Cambiar estado}{Cambiar el estado del usuario entre \texttt{ACTIVE},
+        \texttt{AWAY} y \texttt{BUSY}.}{Si el nuevo estado es diferente al
         anterior, el servidor informa a los demás clientes del cambio.}
     \newItem{Lista de usuarios}{Solicita la lista de los usuarios en el
         chat.}{Regresa un objeto con los nombres y estados de los usuarios.}
@@ -221,97 +214,137 @@ través de los mensajes que se envían.
         regresará un diccionario con los nombres y estados de los usuarios. Si la
         sala existe pero el usuario no ha sido invitado o no se ha unido, el
         servidor responderá que el usuario no se ha unido a la sala y, si la sala
-        no existe, el servidor transmitirá el mensaje.}
+        no existe, el servidor respondera indicando que no existe.}
     \newItem{Mensaje a una sala}{Mandar un mensaje a una sala}{Si la sala existe
         y el usuario pertenece a ella, el servidor no responderá y envía el
         mensaje a todos los usuarios de la sala. Si la sala existe pero el
         usuario no ha sido invitado o no se ha unido, el servidor responderá que
         el usuario no se ha unido a la sala y, si la sala no existe, el servidor
-        transmitirá el mensaje.}
-    \newItem{Abandonar una sala}{Abandar una sala a la que pertenece el
+        respondera indicando que no existe.}
+    \newItem{Abandonar una sala}{Abandonar una sala a la que pertenece el
         usuario.}{Si la sala existe y el usuario pertenece a ella, el servidor no
         responderá y el usuario abandonara la sala. Si la sala existe pero el
         usuario no ha sido invitado o no se ha unido, el servidor responderá que
         el usuario no se ha unido a la sala y si la sala no existe el servidor
-        transmitirá el mensaje.}
+        respondera indicando que no existe.}
     \newItem{Desconectarse}{Desconectar al usuario del chat y abandonar todas
         las salas a las que pertenece.}{No responde y el usuario se
         desconecta. Si este pertenece a alguna sala, las abandona.}
 \end{itemize}
 
-
 \section*{Diseño}
 \addcontentsline{toc}{section}{Diseño}
 
-\uml{Usuario}{
-    \private{nombre: string}
-    \private{estado: Estado}
-    \private{color: Color}
+La implementación se divide principalmente en dos clases: el cliente y el
+servidor. Ambas se encargan de la comunicación mediante sockets apoyandose de
+diversas clases, enumeraciones, estructuras y espacios de nombres que se
+encargan de leer y construir los mensajes que se envían.
+
+Antes de iniciar el cliente, el programa recibe 3 banderas: \texttt{`-u`} para
+el mombre de usuario, \texttt{`-p`} para el puerto y \texttt{`-i`} para la ip.
+Validamos todos los argumentos los utilizando el namespace
+\texttt{Argumentos}. Si todos son válidos entonces los guardamos en la
+estructura \texttt{Parametros} que se usara para inicializar el cliente.
+
+El \texttt{Cliente} se encarga de realizar la comunicación entre el usuario y el
+servidor. Para ello utiliza el namespace \texttt{Controlador} que cuenta con
+dos funciones principales. La primera recibe el comando y los parámetros de la
+acción que desea realizar el usuario y regresa la solicitud a enviar al
+servidor. La segunda recibe el mensaje de respuesta del servidor a la solicitud
+para imprimirlo mediante la \texttt{Vista}.
+
+Como propiedades tiene un usuario, que guarda los datos del mismo, el puerto y
+la ip del servidor y el socket mediante el que se comunica con el servidor.
+
+\crc{Cliente}{
+  \item Ejecuta el cliente.
+  \item Recibe mensajes del servidor.
+  \item Lee la entrada del usuario.
+  \item Hace solicitudes al servidor.
+  \item Desconecta el cliente.
 }{
-    \public{Usuario(nombre : string)}
-    \public{getNombre(): string}
-    \public{setEstado(estado : Estado)}
-    \public{getEstado(): Estado}
-    \public{toColorString(): string}
+  \item{«namespace» Controlador}
+  \item{«namespace» Vista}
+  \item Usuario
 }
 
-\uml{«enumeration»\\ Estado}{
-    \noAccess{Active}
-    \noAccess{Away}
-    \noAccess{Busy}
+El \texttt{Usuario} es la clase propiedad del cliente que se encarga de guardar
+la información del usuario como son el nombre, el \texttt{EstadoConexion}
+(\texttt{ACTIVE} por defecto) y el color, así como un booleano que nos indica si
+el mismo todavia esta conectado al servidor.
+
+\crc{Usuario}{
+  \item Define los datos del usuario.
+  \item Regresa los datos del usuario.
+  \item Modifica el estado de la conexión del usuario.
 }{
-    \noAccess{}
+  \item{«enumeration» Color}
+  \item{«enumeration» EstadoConexion}
 }
 
-\uml{«enumeration»\\ Color}{
-    \noAccess{Rojo}
-    \noAccess{Verde}
-    \noAccess{Amarillo}
-    \noAccess{Azul}
-    \noAccess{Magenta}
-    \noAccess{Cyan}
+El \texttt{Servidor} se encarga de leer y responder a las solicitudes del
+cliente. Para ello utiliza la función principal del namespace
+\texttt{Controlador} (diferente al controlador del cliente) que se encarga de
+procesar los mensajes de los clientes y regresar la estructura
+\texttt{Resultado} que contiene el mensaje de respuesta junto a sus
+destinatarios. De igual manera, la \texttt{Vista} se encarga de imprimir las
+solicitudes y los mensajes de respuesta.
+
+Como propiedades tiene una estructura \texttt{Configuracion} que como su nombre
+indica, guarda la configuración del servidor establecida al iniciar el programa,
+el socket del servidor, un diccionario de conexiones que guarda las conexiones
+activas, un vector con los hilos de ejecución de cada conexion, el mutex para la
+concurrencia, y un diccionario con las salas activas.
+
+\crc{Servidor}{
+  \item Ejecuta el servidor.
+  \item Lee las solicitudes de las conexiones.
+  \item Obtiene las respuestas a las solicitudes.
+  \item Envia los mensajes de respuesta a las conexiones.
+  \item Desconecta el servidor.
 }{
-    \noAccess{}
+  \item{«struct» Configuracion}
+  \item{«namespace» Controlador}
+  \item{«namespace» Vista}
+  \item{«struct» Resultado}
+  \item Conexion
+  \item Sala
 }
 
+La \texttt{Conexion} es el objeto que se crea por cada cliente que se conecta al
+servidor para mantener la información relevante para comunicarse. Se encarga de
+guardar el nombre de usuario, el socket y el \texttt{EstadoConexion}, así como un
+número que indica el orden en que se conectó el usuario al servidor.
 
-
-\uml{Cliente}{
-    \private{Usuario}
+\crc{Conexion}{
+  \item Define los datos de la conexión.
+  \item Regresa los datos de la conexión.
+  \item Desconecta el socket de la conexión.
 }{
-    \public{hacerSolicitud()}
-    \public{conectarse()}
-    \public{cambiarEstado()}
-    \public{listaUsuarios()}
-    \public{mensajePrivado()}
-    \public{mensajePublico()}
-    \public{nuevaSala()}
-    \public{invitarUsuarios()}
+  \item{«enumeration» EstadoConexion}
 }
 
-\uml{Servidor}{
-    \private{Conexiones}
-    \public
-}{
-    \public{responderSolicitud()}
-    \public{usuarioValido()}
-    \public{listaUsuarios()}
-    \public{enviarMensaje()}
-    \public{salaValida()}
-    \public{crearSala()}
+La \texttt{Sala} es el objeto que se crea cada vez que un cliente solicita crear
+una nueva sala. Esta guarda un diccionario con sus integrantes (conexiones) y un
+vector con los invitados.
 
+\crc{Sala}{
+  \item Define los datos de la sala.
+  \item Regresa a los invitados y/o intengrantes de la sala.
+  \item Modifica a los invitados y/o intengrantes de la sala.
+}{
+  \item Conexion
 }
 
-\uml{«enumeration»\\ Mensaje}{
-    \noAccess
-}{
-    \public
-}
-
+Además de las clases mencionadas también se necesita de enumeraciones para la
+lectura y procesamiento de los mensajes. Las enumeraciones
+\texttt{MensajeCliente} y \texttt{MensajeServidor} estan para definir los tipos
+de mensajes que se pueden enviar entre si el cliente y el servidor. Ambas se
+apoyan del namespace \texttt{Mensaje} para hacer la conversión entre enum,
+string y json.
 
 \section*{Conclusión}
 \addcontentsline{toc}{section}{Conclusión}
-
 
 
 % FIN DEL DOCUMENTO
